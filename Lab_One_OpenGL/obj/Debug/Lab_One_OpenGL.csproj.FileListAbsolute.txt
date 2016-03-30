@@ -1,0 +1,14 @@
+c:\documents\visual studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\bin\Debug\Lab_One_OpenGL.exe.config
+c:\documents\visual studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\bin\Debug\Lab_One_OpenGL.exe
+c:\documents\visual studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\bin\Debug\Lab_One_OpenGL.pdb
+c:\documents\visual studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\bin\Debug\OpenTK.dll
+c:\documents\visual studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\bin\Debug\OpenTK.GLControl.dll
+c:\documents\visual studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\bin\Debug\OpenTK.pdb
+c:\documents\visual studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\bin\Debug\OpenTK.xml
+c:\documents\visual studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\bin\Debug\OpenTK.GLControl.xml
+c:\documents\visual studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\obj\Debug\Lab_One_OpenGL.csprojResolveAssemblyReference.cache
+c:\documents\visual studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\obj\Debug\Lab_One_OpenGL.Form1.resources
+c:\documents\visual studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\obj\Debug\Lab_One_OpenGL.Properties.Resources.resources
+c:\documents\visual studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\obj\Debug\Lab_One_OpenGL.csproj.GenerateResource.Cache
+c:\documents\visual studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\obj\Debug\Lab_One_OpenGL.exe
+c:\documents\visual studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\obj\Debug\Lab_One_OpenGL.pdb
