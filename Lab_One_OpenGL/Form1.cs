@@ -23,6 +23,8 @@ namespace Lab_One_OpenGL
         {
             glgraphics.Setup(glControl1.Width, glControl1.Height);
             Application.Idle += Application_Idle;
+            int texID = glgraphics.LoadTexture("logo_ITMM.png");
+            glgraphics.texturesIDs.Add(texID);
         }
 
         private void glControl1_Paint(object sender, PaintEventArgs e)
