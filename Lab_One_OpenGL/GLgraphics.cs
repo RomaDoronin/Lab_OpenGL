@@ -14,11 +14,12 @@ namespace Lab_One_OpenGL
     {
         public float rotateAngle;
         public List<int> texturesIDs = new List<int>();
-        public int Cheker = 1;
+        public float Cheker = 1.0f;
 
-        Vector3 cameraPosition = new Vector3(2, 3, 4);
-        Vector3 cameraDirecton = new Vector3(0, 0, 0);
+        Vector3 cameraPosition = new Vector3(2, 3, 4); //Позиция камеры
+        Vector3 cameraDirecton = new Vector3(0, 0, 0); //Направление камеры
         Vector3 cameraUp = new Vector3(0, 0, 1);
+
 
         public float latitude = 47.98f;
         public float longitude = 60.41f;
@@ -57,6 +58,7 @@ namespace Lab_One_OpenGL
                 (float)(radius * Math.Sin(Math.PI / 180.0f * latitude)));
         }
 
+        // Функция рисующая Тестовый квадрат
         private void drawTestQuad()
         {
             GL.Begin(PrimitiveType.Quads);
@@ -73,46 +75,65 @@ namespace Lab_One_OpenGL
 
         public void Render()
         {
+            // Тестовый крадрат
             //drawTestQuad();
-            //GL.PushMatrix();
-            //GL.Translate(1, 1, 1);
-            //GL.Rotate(45/*rotateAngle*/, Vector3.UnitZ);
-            //GL.Scale(0.5f, 0.5f, 0.5f);
-            //drawTestQuad();
-            //GL.PopMatrix();
-           // drawTexturedQuad();
+
+            // Трансформированный квадрат
+            /*GL.PushMatrix();
+            GL.Translate(1, 1, 1);
+            GL.Rotate(rotateAngle, Vector3.UnitZ);
+            GL.Scale(0.5f, 0.5f, 0.5f);
+            drawTestQuad();
+            GL.PopMatrix();
+            drawTexturedQuad();*/
             
-            // drawSphere(1.5f, 20, 20, Color.BlueViolet);
+            // Сфера
+            //drawSphere(1.5f, 10, 10, Color.BlueViolet, 8);
 
-            //drawPoint(); //Точка
+            // Точка
+            //drawPoint();
 
-            //drawLine(); //Линия
+            // Линия
+            //drawLine(1, 1, 1);
 
-            //drawCircle(1); //Окружность
+            // Окружность
+            //drawCircle(1, Color.Red, false);
 
-            //drawTriangle(); //Треугольник
+            // Треугольнкик
+            //drawTriangle();
 
-            //drawTriangleStrip(); // Шестиугольник
+            // Шестиугольник
+            //drawTriangleStrip();
 
-            //drawTriangleFun(); // Пирамида четырехугольная без основания  
+            // Пирамида четырехугольная без основания
+            //drawTriangleFun();  
 
-            /*GL.PushMatrix(); // Кубик
+            // Куб с текстурами
+            /*GL.PushMatrix();
             GL.Scale(0.5f, 0.5f, 0.5f);
             DrawCube();
             GL.PopMatrix();*/
 
-            //-----------------
-            //Солнечная система
+            // Солнечная система
             DrawSolSystem();
 
-            /*drawLine(2, 0, 0);
-            drawLine(0, 2, 0);
-            drawLine(0, 0, 2);*/
+            // Координатные оси (X,Y,Z)
+            /*drawLine(1, 0, 0);
+            drawLine(0, 1, 0);
+            drawLine(0, 0, 1);*/
 
-            DrawSqCube();//Фон
+            // Фон
+            DrawSqCube();
+
+            // Шар - положение источника света
+            /*GL.PushMatrix();
+            GL.Translate(0.0f, 0.0f, 1.1f);
+            drawSphere(0.2f, 20, 20, Color.Yellow, 1);
+            GL.PopMatrix();*/
 
         }
 
+        // Функция загружающая текстуры
         public int LoadTexture(string filePath)
         {
             try
@@ -136,67 +157,90 @@ namespace Lab_One_OpenGL
             }
         }
 
+        // Функция рисующая квадрат с текстурами
         private void drawTexturedQuad()
         {
+            // Включение наложения текстур
             GL.Enable(EnableCap.Texture2D);
-            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[7]);
+            // Указание, какую текстуру берем
+            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[8]);
+
             GL.Begin(PrimitiveType.Quads);
             GL.Color3(Color.Blue);
+            // Задание Текстурных координат
             GL.TexCoord2(0.0, 0.0);
             GL.Vertex3(-1.0f, -1.0f, -1.0f);
             GL.Color3(Color.Red);
+            // Задание Текстурных координат
             GL.TexCoord2(0.0, 1.0);
             GL.Vertex3(-1.0f, 1.0f, -1.0f);
             GL.Color3(Color.White);
+            // Задание Текстурных координат
             GL.TexCoord2(1.0, 1.0);
             GL.Vertex3(1.0f, 1.0f, -1.0f);
             GL.Color3(Color.Green);
+            // Задание Текстурных координат
             GL.TexCoord2(1.0, 0.0);
             GL.Vertex3(1.0f, -1.0f, -1.0f);
             GL.End();
+
+            // Выключение наложения текстур
             GL.Disable(EnableCap.Texture2D);
         }
 
+        // Функция настройки Света
         private void SetupLightning()
         {
+            // Включение Освещения
             GL.Enable(EnableCap.Lighting);
+            // Включение нулевого источника света
             GL.Enable(EnableCap.Light0);
+            // Включение освещение цветных вершин
             GL.Enable(EnableCap.ColorMaterial);
 
-            Vector4 lightPosition = new Vector4(1.0f, 1.0f, 4.0f, 0.0f);
+            // Установка позиции источника света
+            Vector4 lightPosition = new Vector4(0.0f, 0.0f, 1.5f, 0.0f);
             GL.Light(LightName.Light0, LightParameter.Position, lightPosition);
 
+            // Установка цвета, который будет иметь объект, не освещенный источником
             Vector4 ambientColor = new Vector4(0.2f, 0.2f, 0.2f, 1.0f);
             GL.Light(LightName.Light0, LightParameter.Ambient, ambientColor);
 
-            Vector4 diffuseColor = new Vector4(0.6f, 0.6f, /*0.6f,*/ 1.0f, 1.0f);
+            // Установка цвета, который будет иметь объект, освещенный источником
+            Vector4 diffuseColor = new Vector4(0.6f, 0.6f, 1.0f, 1.0f);
             GL.Light(LightName.Light0, LightParameter.Diffuse, diffuseColor);
 
+            // Установка материалам зеркальной состовляющей
             Vector4 materialSpecular = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
             GL.Material(MaterialFace.Front, MaterialParameter.Specular, materialSpecular);
             float materialShininess = 100;
             GL.Material(MaterialFace.Front, MaterialParameter.Shininess, materialShininess);
         }
 
+        // Функция рисующая Сферу
         private void drawSphere(double r, int nx, int ny, Color ColorPlanet, int NumPlanet)
         {
+            // r - радиус сферы
+            // nx * ny - колличество полигонов(четырехугольников) из которых будет собрана сфера
+            // ColorPlanet - цвет сферы
+            // NumPlanet - номер текстуры для накладывания на сферу
             
-
             int ix, iy;
             double x, y, z;
             for (iy = 0; iy < ny; ++iy)
             {
+                if (NumPlanet == 8)
+                {
+                    GL.Enable(EnableCap.Texture2D);
+                    GL.BindTexture(TextureTarget.Texture2D, texturesIDs[NumPlanet]);
+                }
                 GL.Begin(PrimitiveType.QuadStrip);
-                if (NumPlanet != 8)
+                //if (NumPlanet != 8)
                     GL.Color3(ColorPlanet);
 
                 for (ix = 0; ix <= nx; ++ix)
                 {
-                    if (NumPlanet == 8)
-                    {
-                        GL.Enable(EnableCap.Texture2D);
-                        GL.BindTexture(TextureTarget.Texture2D, texturesIDs[NumPlanet]);
-                    }
+                    
                     x = r * Math.Sin(iy * Math.PI / ny) * Math.Cos(2 * ix * Math.PI / nx);
                     y = r * Math.Sin(iy * Math.PI / ny) * Math.Sin(2 * ix * Math.PI / nx);
                     z = r * Math.Cos(iy * Math.PI / ny);
@@ -225,8 +269,10 @@ namespace Lab_One_OpenGL
             }
         }
 
+        // Функция рисующая Точку
         private void drawPoint()
         {
+            // Задание размера точки
             GL.PointSize(5);
 
             GL.Begin(PrimitiveType.Points);
@@ -234,8 +280,11 @@ namespace Lab_One_OpenGL
             GL.Vertex3(0, 0, 0);
             GL.End();
         }
+
+        // Функция рисующая Линию
         private void drawLine(int x, int y, int z)
         {
+            // Задание ширины/толщины линии
             GL.LineWidth(5);
 
             GL.Begin(PrimitiveType.Lines);
@@ -246,6 +295,7 @@ namespace Lab_One_OpenGL
             GL.End();
         }
 
+        // Функция рисующая  Треугольник
         private void drawTriangle()
         {
             GL.Begin(PrimitiveType.Triangles);
@@ -258,52 +308,52 @@ namespace Lab_One_OpenGL
             GL.End();
         }
 
+        // Функция рисующая Шестиугольник
         private void drawTriangleStrip()
         {
-            // Функция рисует треугольники по тройкам в последовательности
+            // TriangleStrip - рисует треугольники, беря вершины по тройкам в последовательности
          
             GL.Begin(PrimitiveType.TriangleStrip);
-
             GL.Color3(Color.White);
-            GL.Vertex3(-1.7f, -1.0f, -1.0f);
+            GL.Vertex3(-1.7f, -1.0f, -1.0f); // 1
             GL.Color3(Color.White);
-            GL.Vertex3(-1.7f, 1.0f, -1.0f);
+            GL.Vertex3(-1.7f, 1.0f, -1.0f);  // 1,2
             GL.Color3(Color.Blue);
-            GL.Vertex3(0.0f, -2.0f, -1.0f);
+            GL.Vertex3(0.0f, -2.0f, -1.0f);  // 1,2,3
             GL.Color3(Color.Blue);
-            GL.Vertex3(0.0f, 2.0f, -1.0f);
+            GL.Vertex3(0.0f, 2.0f, -1.0f);   // 2,3,4
             GL.Color3(Color.Red);
-            GL.Vertex3(1.7f, -1.0f, -1.0f);
+            GL.Vertex3(1.7f, -1.0f, -1.0f);  // 3,4
             GL.Color3(Color.Red);
-            GL.Vertex3(1.7f, 1.0f, -1.0f);           
+            GL.Vertex3(1.7f, 1.0f, -1.0f);   // 4
             GL.End();
         }
 
+        // Функция рисующая Четырехугольную пирамиду
         private void drawTriangleFun()
         {
-            // Функция рисует треугольтики первая вершина и две последние
+            // TriangleFan - рисует треугольтики, беря как вершины первую и две последние
 
             GL.Begin(PrimitiveType.TriangleFan);
-
             GL.Color3(Color.Red);
-            GL.Vertex3(0.0f, 0.0f, 1.0f);
+            GL.Vertex3(0.0f, 0.0f, 1.0f);    // 1,2,3,4
             GL.Color3(Color.Orange);
-            GL.Vertex3(1.0f, 1.0f, -1.0f);
+            GL.Vertex3(1.0f, 1.0f, -1.0f);   // 1,4
             GL.Color3(Color.Yellow);
-            GL.Vertex3(1.0f, -1.0f, -1.0f);
+            GL.Vertex3(1.0f, -1.0f, -1.0f);  // 1,2
             GL.Color3(Color.Green);
-            GL.Vertex3(-1.0f, -1.0f, -1.0f);
+            GL.Vertex3(-1.0f, -1.0f, -1.0f); // 2,3
             GL.Color3(Color.Blue);
-            GL.Vertex3(-1.0f, 1.0f, -1.0f);
+            GL.Vertex3(-1.0f, 1.0f, -1.0f);  // 3,4
+            // Вершина повторяется, чтобы замкнуть пирамиду
             GL.Color3(Color.Orange);
             GL.Vertex3(1.0f, 1.0f, -1.0f);
- 
             GL.End();
         }
 
+        // Функция рисующая Куб с текстурами
         private void DrawCube()
         {
-
             // Первая Грань
             GL.Enable(EnableCap.Texture2D);
             GL.BindTexture(TextureTarget.Texture2D, texturesIDs[0]);
@@ -419,12 +469,13 @@ namespace Lab_One_OpenGL
             GL.Disable(EnableCap.Texture2D);
         }
 
+        // Функция рисующая Солнечную Систему
         private void DrawSolSystem()
         {
-            //Солнце
+            // Солнце
             GL.PushMatrix();
             GL.Rotate((rotateAngle * 24.47f / 50), Vector3.UnitZ);
-            drawSphere(1.0f, 20, 20, Color.Yellow, 7);
+            drawSphere(1.0f, 20, 20, Color.Yellow, 8);
             GL.PopMatrix();
 
             Color CCorcle = Color.White;
@@ -436,17 +487,23 @@ namespace Lab_One_OpenGL
             drawCircle(5.19 * 3, CCorcle, false);
             drawCircle(9.53 * 3, CCorcle, false);
 
-            //Меркурий
+            // Меркурий
+
+            // Координаты положения планеты:
+            // Math.Sin(rotateAngle / <скорость вращения>) * <радиус вращения> * 3
+            // Math.Cos(rotateAngle / <скорость вращения>) * <радиус вращения> * 3
             GL.PushMatrix();
             GL.Translate(
                 Math.Sin(rotateAngle / 7.23) * 0.387 * 3,
                 Math.Cos(rotateAngle / 7.23) * 0.387 * 3,
                 0);
+
+            // GL.Rotate(rotateAngle * <скорость вращения вокруг своей оси> / 50, Vector3.UnitZ);
             GL.Rotate(rotateAngle * 88 / 50, Vector3.UnitZ);
             drawSphere(0.111f / 3, 20, 20, Color.Orange, 10);
             GL.PopMatrix();
             
-            //Венера
+            // Венера
             GL.PushMatrix();
             GL.Translate(
                 Math.Sin(rotateAngle / 18.46) * 0.733 * 3,
@@ -456,16 +513,14 @@ namespace Lab_One_OpenGL
             drawSphere(0.291f / 3, 20, 20, Color.LightBlue, 100);
             GL.PopMatrix();
 
-            //Земля
+            // Земля
             GL.PushMatrix();
             GL.Translate(
-                //Координаты положения планеты 
-                //Math.Sin(rotateAngle / <скорость вращения>) * <радиус вращения> * 3,
                 Math.Sin(rotateAngle / 30) * 3,
                 Math.Cos(rotateAngle / 30) * 3,
                 0);
             GL.Rotate(rotateAngle / 50, Vector3.UnitZ);
-            drawSphere(0.3f / 3, 20, 20, Color.DarkBlue, 100);
+            drawSphere(0.3f / 3, 20, 20, Color.DarkBlue, 1);
             GL.PopMatrix();
 
             //Луна
@@ -515,7 +570,6 @@ namespace Lab_One_OpenGL
             }
 
             i = 1.7;
-
             while (i < 2.11)
             {
                 drawCircle(i, Color.Orange, true);
@@ -525,18 +579,21 @@ namespace Lab_One_OpenGL
             GL.PopMatrix();
         }
 
+        // Функция рисующая Окружность
         private void drawCircle(double Radius, Color CircleColor, bool round)
         {
             //Переменна round нужна для наклона колец Cатурна
+
             GL.PointSize(1);
 
             GL.Begin(PrimitiveType.Points);
             double i = 0;
             double alf;
 
-            while ( i < (10) )
+            while (i < 10)
             {
-                if (round) alf = Math.Sin(i) * Radius;
+                if (round) 
+                    alf = Math.Sin(i) * Radius;
                 else
                     alf = 0;
                 GL.Color3(CircleColor);
@@ -546,9 +603,31 @@ namespace Lab_One_OpenGL
             GL.End();
         }
 
+        // Функция рисующая Треугольники в углах фоновой текстуры
+        private void DrawAlf(float Size, float SizeTr, int x, int y, int z)
+        {
+            // Size - размер фоновой текстуры
+            // SizeTr - размер угловых треугольников
+
+            GL.Enable(EnableCap.Texture2D);
+            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[7]);
+            GL.Begin(PrimitiveType.Triangles);
+            GL.TexCoord2(0.0, 0.0);
+            GL.Vertex3(x * SizeTr, y * Size, z * Size);
+            GL.TexCoord2(0.0, 1.0);
+            GL.Vertex3(x * Size, y * SizeTr, z * Size);
+            GL.TexCoord2(1.0, 1.0);
+            GL.Vertex3(x * Size, y * Size, z * SizeTr);
+            GL.TexCoord2(1.0, 0.0);
+            GL.End();
+            GL.Disable(EnableCap.Texture2D);
+        }
+
+        // Функция рисующая фоновую текстуру "КОСМОС"
         private void DrawSqCube()
         {
-            float Size = 32.0f;
+            float Size = 32.0f, SizeTr = 28.0f;
+
             // Первая Грань
             GL.Enable(EnableCap.Texture2D);
             GL.BindTexture(TextureTarget.Texture2D, texturesIDs[7]);
@@ -638,6 +717,17 @@ namespace Lab_One_OpenGL
             GL.Vertex3(-Size, Size, Size);
             GL.End();
             GL.Disable(EnableCap.Texture2D);
+
+            //Углы фоновой текстуры
+            DrawAlf(Size, SizeTr, 1, 1, 1);
+            DrawAlf(Size, SizeTr, 1, 1, -1);
+            DrawAlf(Size, SizeTr, 1, -1, 1);
+            DrawAlf(Size, SizeTr, 1, -1, -1);
+            DrawAlf(Size, SizeTr, -1, 1, 1);
+            DrawAlf(Size, SizeTr, -1, 1, -1);
+            DrawAlf(Size, SizeTr, -1, -1, 1);
+            DrawAlf(Size, SizeTr, -1, -1, -1);
         }
+
     }
 }

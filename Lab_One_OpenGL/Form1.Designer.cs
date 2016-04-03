@@ -37,34 +37,35 @@
             // glControl1
             // 
             this.glControl1.BackColor = System.Drawing.Color.Black;
-            this.glControl1.Location = new System.Drawing.Point(32, 12);
+            this.glControl1.Location = new System.Drawing.Point(32, 39);
             this.glControl1.Name = "glControl1";
-            this.glControl1.Size = new System.Drawing.Size(651, 542);
+            this.glControl1.Size = new System.Drawing.Size(651, 515);
             this.glControl1.TabIndex = 0;
             this.glControl1.VSync = false;
             this.glControl1.Load += new System.EventHandler(this.glControl1_Load);
             this.glControl1.Paint += new System.Windows.Forms.PaintEventHandler(this.glControl1_Paint);
+            this.glControl1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.glControl1_KeyDown);
             this.glControl1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.glControl1_MouseClick);
             this.glControl1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.glControl1_MouseMove);
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(4, 67);
+            this.button1.Location = new System.Drawing.Point(50, 7);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(22, 23);
+            this.button1.Size = new System.Drawing.Size(121, 23);
             this.button1.TabIndex = 1;
-            this.button1.Text = "+";
+            this.button1.Text = "W - приблизить";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // button2
             // 
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button2.Location = new System.Drawing.Point(4, 96);
+            this.button2.Location = new System.Drawing.Point(177, 7);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(22, 23);
+            this.button2.Size = new System.Drawing.Size(121, 23);
             this.button2.TabIndex = 2;
-            this.button2.Text = "-";
+            this.button2.Text = "S - отдалить";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
@@ -73,9 +74,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(10, 12);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(16, 52);
+            this.label1.Size = new System.Drawing.Size(34, 13);
             this.label1.TabIndex = 3;
-            this.label1.Text = "Z\r\nO\r\nO\r\nM";
+            this.label1.Text = "Zoom";
             // 
             // Form1
             // 

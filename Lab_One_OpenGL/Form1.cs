@@ -29,24 +29,25 @@ namespace Lab_One_OpenGL
             texID[0] = glgraphics.LoadTexture("logo_ITMM.png");
             glgraphics.texturesIDs.Add(texID[0]);
             
-            int texID1 = glgraphics.LoadTexture("1.png");
-            glgraphics.texturesIDs.Add(texID1);
-            int texID2 = glgraphics.LoadTexture("2.png");
-            glgraphics.texturesIDs.Add(texID2);
-            int texID3 = glgraphics.LoadTexture("3.png");
-            glgraphics.texturesIDs.Add(texID3);
-            int texID4 = glgraphics.LoadTexture("4.png");
-            glgraphics.texturesIDs.Add(texID4);
-            int texID5 = glgraphics.LoadTexture("5.png");
-            glgraphics.texturesIDs.Add(texID5);
-            int texID6 = glgraphics.LoadTexture("6.png");
-            glgraphics.texturesIDs.Add(texID6);
-            int texID7 = glgraphics.LoadTexture("kosmos.jpg");
-            glgraphics.texturesIDs.Add(texID7);
+            texID[1] = glgraphics.LoadTexture("1.png");
+            glgraphics.texturesIDs.Add(texID[1]);
+            texID[2] = glgraphics.LoadTexture("2.png");
+            glgraphics.texturesIDs.Add(texID[2]);
+            texID[3] = glgraphics.LoadTexture("3.png");
+            glgraphics.texturesIDs.Add(texID[3]);
+            texID[4] = glgraphics.LoadTexture("4.png");
+            glgraphics.texturesIDs.Add(texID[4]);
+            texID[5] = glgraphics.LoadTexture("5.png");
+            glgraphics.texturesIDs.Add(texID[5]);
+            texID[6] = glgraphics.LoadTexture("6.png");
+            glgraphics.texturesIDs.Add(texID[6]);
+            texID[7] = glgraphics.LoadTexture("kosmos.jpg");
+            glgraphics.texturesIDs.Add(texID[7]);
 
             
             texID[8] = glgraphics.LoadTexture("Sun.png"); //Текстура Солнца
             glgraphics.texturesIDs.Add(texID[8]);
+
             /*texID[9] = glgraphics.LoadTexture("Меркурий.png"); //Текстура Мекрурия
             glgraphics.texturesIDs.Add(texID[9]);
             texID[10] = glgraphics.LoadTexture("venus.png"); //Текстура Венеры
@@ -108,9 +109,27 @@ namespace Lab_One_OpenGL
 
         private void button2_Click(object sender, EventArgs e)
         {
-            if (glgraphics.Cheker < 7) glgraphics.Cheker++;
+            if (glgraphics.Cheker < 2) glgraphics.Cheker++;
         }
 
+        private void glControl1_KeyDown(object sender, KeyEventArgs e)
+        {
+            int num;
+            num = (int)e.KeyCode;
+            if (num == 83)
+            {
+                if (glgraphics.Cheker < 2) glgraphics.Cheker += 0.1f;
+            }
+            if (num == 87)
+            {
+                if (glgraphics.Cheker > 1) glgraphics.Cheker -= 0.1f;
+            }
+        }
+
+        private void glControl1_MouseWheel(object sender, MouseEventArgs e)
+        {
+
+        }
 
     }
 }
