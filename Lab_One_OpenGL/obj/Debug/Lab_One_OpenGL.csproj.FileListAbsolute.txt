@@ -12,3 +12,17 @@ c:\documents\visual studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\obj\Debug
 c:\documents\visual studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\obj\Debug\Lab_One_OpenGL.csproj.GenerateResource.Cache
 c:\documents\visual studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\obj\Debug\Lab_One_OpenGL.exe
 c:\documents\visual studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\obj\Debug\Lab_One_OpenGL.pdb
+C:\Users\Doronin Roman\Documents\Visual Studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\bin\Debug\Lab_One_OpenGL.exe.config
+C:\Users\Doronin Roman\Documents\Visual Studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\obj\Debug\Lab_One_OpenGL.exe
+C:\Users\Doronin Roman\Documents\Visual Studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\obj\Debug\Lab_One_OpenGL.pdb
+C:\Users\Doronin Roman\Documents\Visual Studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\bin\Debug\Lab_One_OpenGL.exe
+C:\Users\Doronin Roman\Documents\Visual Studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\bin\Debug\Lab_One_OpenGL.pdb
+C:\Users\Doronin Roman\Documents\Visual Studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\bin\Debug\OpenTK.dll
+C:\Users\Doronin Roman\Documents\Visual Studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\bin\Debug\OpenTK.GLControl.dll
+C:\Users\Doronin Roman\Documents\Visual Studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\bin\Debug\OpenTK.pdb
+C:\Users\Doronin Roman\Documents\Visual Studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\bin\Debug\OpenTK.xml
+C:\Users\Doronin Roman\Documents\Visual Studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\bin\Debug\OpenTK.GLControl.xml
+C:\Users\Doronin Roman\Documents\Visual Studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\obj\Debug\Lab_One_OpenGL.csprojResolveAssemblyReference.cache
+C:\Users\Doronin Roman\Documents\Visual Studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\obj\Debug\Lab_One_OpenGL.Form1.resources
+C:\Users\Doronin Roman\Documents\Visual Studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\obj\Debug\Lab_One_OpenGL.Properties.Resources.resources
+C:\Users\Doronin Roman\Documents\Visual Studio 2013\Projects\Lab_One_OpenGL\Lab_One_OpenGL\obj\Debug\Lab_One_OpenGL.csproj.GenerateResource.Cache

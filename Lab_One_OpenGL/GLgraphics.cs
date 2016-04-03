@@ -14,7 +14,7 @@ namespace Lab_One_OpenGL
     {
         public float rotateAngle;
         public List<int> texturesIDs = new List<int>();
-        public float Cheker = 1.0f;
+        public float Cheker = 2.0f;
 
         Vector3 cameraPosition = new Vector3(2, 3, 4); //Позиция камеры
         Vector3 cameraDirecton = new Vector3(0, 0, 0); //Направление камеры
@@ -62,13 +62,13 @@ namespace Lab_One_OpenGL
         private void drawTestQuad()
         {
             GL.Begin(PrimitiveType.Quads);
-            GL.Color3(Color.Blue);
+            GL.Color3(Color.Red);
             GL.Vertex3(-1.0f, -1.0f, -1.0f);
             GL.Color3(Color.Red);
             GL.Vertex3(-1.0f, 1.0f, -1.0f);
-            GL.Color3(Color.White);
+            GL.Color3(Color.Red);
             GL.Vertex3(1.0f, 1.0f, -1.0f);
-            GL.Color3(Color.Green);
+            GL.Color3(Color.Red);
             GL.Vertex3(1.0f, -1.0f, -1.0f);
             GL.End();
         }
@@ -115,21 +115,26 @@ namespace Lab_One_OpenGL
             GL.PopMatrix();*/
 
             // Солнечная система
-            DrawSolSystem();
+             DrawSolSystem();
+            // Фон для SolSystem
+            DrawSqCube(7); 
 
             // Координатные оси (X,Y,Z)
             /*drawLine(1, 0, 0);
             drawLine(0, 1, 0);
-            drawLine(0, 0, 1);*/
-
-            // Фон
-            DrawSqCube();
+            drawLine(0, 0, 1);*/         
 
             // Шар - положение источника света
             /*GL.PushMatrix();
             GL.Translate(0.0f, 0.0f, 1.1f);
             drawSphere(0.2f, 20, 20, Color.Yellow, 1);
             GL.PopMatrix();*/
+
+            // Маятник
+            //DrawPendulum();
+
+            // Комната
+            //DrawRoom();
 
         }
 
@@ -195,20 +200,32 @@ namespace Lab_One_OpenGL
             GL.Enable(EnableCap.Lighting);
             // Включение нулевого источника света
             GL.Enable(EnableCap.Light0);
+
+            //GL.Enable(EnableCap.Light1); // Включение первого истчника света
+
             // Включение освещение цветных вершин
             GL.Enable(EnableCap.ColorMaterial);
 
             // Установка позиции источника света
-            Vector4 lightPosition = new Vector4(0.0f, 0.0f, 1.5f, 0.0f);
+            Vector4 lightPosition = new Vector4(1.0f, 1.0f, 4.0f, 0.0f);
             GL.Light(LightName.Light0, LightParameter.Position, lightPosition);
+
+            /*Vector4 lightPosition1 = new Vector4(-1.0f, -1.0f, 4.5f, 0.0f);
+            GL.Light(LightName.Light1, LightParameter.Position, lightPosition1);*/
 
             // Установка цвета, который будет иметь объект, не освещенный источником
             Vector4 ambientColor = new Vector4(0.2f, 0.2f, 0.2f, 1.0f);
             GL.Light(LightName.Light0, LightParameter.Ambient, ambientColor);
 
+            /*Vector4 ambientColor1 = new Vector4(0.4f, 0.4f, 0.4f, 1.0f);
+            GL.Light(LightName.Light1, LightParameter.Ambient, ambientColor1);*/
+
             // Установка цвета, который будет иметь объект, освещенный источником
             Vector4 diffuseColor = new Vector4(0.6f, 0.6f, 1.0f, 1.0f);
             GL.Light(LightName.Light0, LightParameter.Diffuse, diffuseColor);
+
+            /*Vector4 diffuseColor1 = new Vector4(0.6f, 0.6f, 1.0f, 1.0f);
+            GL.Light(LightName.Light1, LightParameter.Diffuse, diffuseColor1);*/
 
             // Установка материалам зеркальной состовляющей
             Vector4 materialSpecular = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -282,7 +299,7 @@ namespace Lab_One_OpenGL
         }
 
         // Функция рисующая Линию
-        private void drawLine(int x, int y, int z)
+        private void drawLine(double x, double y, double z)
         {
             // Задание ширины/толщины линии
             GL.LineWidth(5);
@@ -624,13 +641,13 @@ namespace Lab_One_OpenGL
         }
 
         // Функция рисующая фоновую текстуру "КОСМОС"
-        private void DrawSqCube()
+        private void DrawSqCube(int TextureNum)
         {
             float Size = 32.0f, SizeTr = 28.0f;
-
+            
             // Первая Грань
             GL.Enable(EnableCap.Texture2D);
-            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[7]);
+            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[TextureNum]);
             GL.Begin(PrimitiveType.Quads);
             GL.TexCoord2(0.0, 0.0);
             GL.Vertex3(-Size, -Size, -Size);
@@ -645,7 +662,7 @@ namespace Lab_One_OpenGL
 
             // Вторая Грань
             GL.Enable(EnableCap.Texture2D);
-            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[7]);
+            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[TextureNum]);
             GL.Begin(PrimitiveType.Quads);
             GL.TexCoord2(0.0, 0.0);
             GL.Vertex3(-Size, -Size, -Size);
@@ -660,7 +677,7 @@ namespace Lab_One_OpenGL
 
             // Третья Грань
             GL.Enable(EnableCap.Texture2D);
-            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[7]);
+            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[TextureNum]);
             GL.Begin(PrimitiveType.Quads);
             GL.TexCoord2(0.0, 0.0);
             GL.Vertex3(-Size, -Size, -Size);
@@ -675,7 +692,7 @@ namespace Lab_One_OpenGL
 
             // Четвертая Грань
             GL.Enable(EnableCap.Texture2D);
-            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[7]);
+            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[TextureNum]);
             GL.Begin(PrimitiveType.Quads);
             GL.TexCoord2(0.0, 0.0);
             GL.Vertex3(Size, -Size, -Size);
@@ -690,7 +707,7 @@ namespace Lab_One_OpenGL
 
             // Пятая Грань
             GL.Enable(EnableCap.Texture2D);
-            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[7]);
+            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[TextureNum]);
             GL.Begin(PrimitiveType.Quads);
             GL.TexCoord2(0.0, 0.0);
             GL.Vertex3(Size, Size, Size);
@@ -705,7 +722,7 @@ namespace Lab_One_OpenGL
 
             // Шестая Грань
             GL.Enable(EnableCap.Texture2D);
-            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[7]);
+            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[TextureNum]);
             GL.Begin(PrimitiveType.Quads);
             GL.TexCoord2(0.0, 0.0);
             GL.Vertex3(-Size, -Size, Size);
@@ -729,5 +746,138 @@ namespace Lab_One_OpenGL
             DrawAlf(Size, SizeTr, -1, -1, -1);
         }
 
+        // Функция рисующая маятник
+        private void DrawPendulum()
+        {
+            drawSphere(0.1, 10, 10, Color.Black, 1);
+            drawCircle(3, Color.Black, false);
+            // Диаметр круга
+            drawLine(0, 3, 0);
+            drawLine(0, -3, 0);
+            
+            // Условие для затухания
+            if ((Math.Cos(rotateAngle / 50) < (5 / Math.Sqrt(Math.Sqrt(rotateAngle)))) &&
+                (Math.Cos(rotateAngle / 50) > -(5 / Math.Sqrt(Math.Sqrt(rotateAngle)))))
+            {
+                GL.PushMatrix();
+                GL.Translate(
+                    Math.Abs(Math.Sin(rotateAngle / 50)) * 3,
+                    Math.Cos(rotateAngle / 50) * 3,
+                    0);
+                drawSphere(0.5, 10, 10, Color.Red, 1);
+                GL.PopMatrix();
+
+                GL.PushMatrix();
+                drawLine(
+                    Math.Abs(Math.Sin(rotateAngle / 50)) * 3,
+                    Math.Cos(rotateAngle / 50) * 3,
+                    0);
+                GL.PopMatrix();
+            }
+            else
+            {
+                // Перескок для затухания
+                rotateAngle += 180 * (float)(1 - 5 / Math.Sqrt(Math.Sqrt(rotateAngle)));
+            }
+
+            // Возможна реализация через остаток, для плавности переходов
+        }
+
+
+        // Функция рисующая комнату
+        private void DrawRoom()
+        {
+            float Size = 30.0f;
+
+            // Первая Грань
+            GL.Enable(EnableCap.Texture2D);
+            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[12]);
+            GL.Begin(PrimitiveType.Quads);
+            GL.TexCoord2(0.0, 0.0);
+            GL.Vertex3(-Size, -Size, -Size);
+            GL.TexCoord2(0.0, 1.0);
+            GL.Vertex3(Size, -Size, -Size);
+            GL.TexCoord2(1.0, 1.0);
+            GL.Vertex3(Size, Size, -Size);
+            GL.TexCoord2(1.0, 0.0);
+            GL.Vertex3(-Size, Size, -Size);
+            GL.End();
+            GL.Disable(EnableCap.Texture2D);
+
+            // Вторая Грань
+            GL.Enable(EnableCap.Texture2D);
+            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[10]);
+            GL.Begin(PrimitiveType.Quads);
+            GL.TexCoord2(0.0, 0.0);
+            GL.Vertex3(-Size, -Size, -Size);
+            GL.TexCoord2(0.0, 1.0);
+            GL.Vertex3(-Size, Size, -Size);
+            GL.TexCoord2(1.0, 1.0);
+            GL.Vertex3(-Size, Size, Size);
+            GL.TexCoord2(1.0, 0.0);
+            GL.Vertex3(-Size, -Size, Size);
+            GL.End();
+            GL.Disable(EnableCap.Texture2D);
+
+            // Третья Грань
+            GL.Enable(EnableCap.Texture2D);
+            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[10]);
+            GL.Begin(PrimitiveType.Quads);
+            GL.TexCoord2(0.0, 0.0);
+            GL.Vertex3(-Size, -Size, -Size);
+            GL.TexCoord2(0.0, 1.0);
+            GL.Vertex3(Size, -Size, -Size);
+            GL.TexCoord2(1.0, 1.0);
+            GL.Vertex3(Size, -Size, Size);
+            GL.TexCoord2(1.0, 0.0);
+            GL.Vertex3(-Size, -Size, Size);
+            GL.End();
+            GL.Disable(EnableCap.Texture2D);
+
+            // Четвертая Грань
+            GL.Enable(EnableCap.Texture2D);
+            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[10]);
+            GL.Begin(PrimitiveType.Quads);
+            GL.TexCoord2(0.0, 0.0);
+            GL.Vertex3(Size, -Size, -Size);
+            GL.TexCoord2(0.0, 1.0);
+            GL.Vertex3(Size, Size, -Size);
+            GL.TexCoord2(1.0, 1.0);
+            GL.Vertex3(Size, Size, Size);
+            GL.TexCoord2(1.0, 0.0);
+            GL.Vertex3(Size, -Size, Size);
+            GL.End();
+            GL.Disable(EnableCap.Texture2D);
+
+            // Пятая Грань
+            GL.Enable(EnableCap.Texture2D);
+            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[11]);
+            GL.Begin(PrimitiveType.Quads);
+            GL.TexCoord2(0.0, 0.0);
+            GL.Vertex3(Size, Size, Size);
+            GL.TexCoord2(0.0, 1.0);
+            GL.Vertex3(Size, Size, -Size);
+            GL.TexCoord2(1.0, 1.0);
+            GL.Vertex3(-Size, Size, -Size);
+            GL.TexCoord2(1.0, 0.0);
+            GL.Vertex3(-Size, Size, Size);
+            GL.End();
+            GL.Disable(EnableCap.Texture2D);
+
+            // Шестая Грань
+            GL.Enable(EnableCap.Texture2D);
+            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[9]);
+            GL.Begin(PrimitiveType.Quads);
+            GL.TexCoord2(0.0, 0.0);
+            GL.Vertex3(-Size, -Size, Size);
+            GL.TexCoord2(0.0, 1.0);
+            GL.Vertex3(Size, -Size, Size);
+            GL.TexCoord2(1.0, 1.0);
+            GL.Vertex3(Size, Size, Size);
+            GL.TexCoord2(1.0, 0.0);
+            GL.Vertex3(-Size, Size, Size);
+            GL.End();
+            GL.Disable(EnableCap.Texture2D);
+        }
     }
 }

@@ -44,10 +44,21 @@ namespace Lab_One_OpenGL
             texID[7] = glgraphics.LoadTexture("kosmos.jpg");
             glgraphics.texturesIDs.Add(texID[7]);
 
-            
-            texID[8] = glgraphics.LoadTexture("Sun.png"); //Текстура Солнца
+            //Текстура Солнца
+            texID[8] = glgraphics.LoadTexture("Sun.png");
             glgraphics.texturesIDs.Add(texID[8]);
 
+            // Комната
+            texID[9] = glgraphics.LoadTexture("flor.jpg");
+            glgraphics.texturesIDs.Add(texID[9]);
+            texID[10] = glgraphics.LoadTexture("Wall.jpg");
+            glgraphics.texturesIDs.Add(texID[10]);
+            texID[11] = glgraphics.LoadTexture("Door.png");
+            glgraphics.texturesIDs.Add(texID[11]);
+            texID[12] = glgraphics.LoadTexture("Sex.jpg");
+            glgraphics.texturesIDs.Add(texID[12]);
+
+            // Система загрузки 100 текстур для Земли
             /*texID[9] = glgraphics.LoadTexture("Меркурий.png"); //Текстура Мекрурия
             glgraphics.texturesIDs.Add(texID[9]);
             texID[10] = glgraphics.LoadTexture("venus.png"); //Текстура Венеры
