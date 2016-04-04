@@ -14,16 +14,15 @@ namespace Lab_One_OpenGL
     {
         public float rotateAngle;
         public List<int> texturesIDs = new List<int>();
-        public float Cheker = 2.0f;
 
-        Vector3 cameraPosition = new Vector3(2, 3, 4); //Позиция камеры
+        Vector3 cameraPosition = new Vector3(3, 3, 3); //Позиция камеры
         Vector3 cameraDirecton = new Vector3(0, 0, 0); //Направление камеры
         Vector3 cameraUp = new Vector3(0, 0, 1);
 
 
         public float latitude = 47.98f;
         public float longitude = 60.41f;
-        public float radius = 5.385f;
+        public float radius = 15.385f; // Радиус по которому перемещается Direction
 
         public void Setup(int width, int height)
         {
@@ -47,15 +46,34 @@ namespace Lab_One_OpenGL
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             //Управление камерой
-            Matrix4 viewMat = Matrix4.LookAt(cameraPosition * Cheker, cameraDirecton, cameraUp);
+            Matrix4 viewMat = Matrix4.LookAt(cameraPosition, cameraDirecton, cameraUp);
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadMatrix(ref viewMat);
             Render();
 
-            cameraPosition = new Vector3(
+            /*cameraPosition*/ cameraDirecton = new Vector3(
                 (float)(radius * Math.Cos(Math.PI / 180.0f * latitude) * Math.Cos(Math.PI / 180.0f * longitude)),
                 (float)(radius * Math.Cos(Math.PI / 180.0f * latitude) * Math.Sin(Math.PI / 180.0f * longitude)),
                 (float)(radius * Math.Sin(Math.PI / 180.0f * latitude)));
+        }
+
+        // Функция для подсчета координат движения
+        public void Straight(float l)
+        {
+            // Координаты направленного вектора
+            float pX = cameraDirecton.X - cameraPosition.X;
+            float pY = cameraDirecton.Y - cameraPosition.Y;
+            float pZ = cameraDirecton.Z - cameraPosition.Z;
+
+            // Вычисление позиции Камеры
+            cameraPosition.X += (l * pX) / (float)Math.Sqrt(pX * pX + pY * pY + pZ * pZ);
+            cameraPosition.Y += (l * pY) / (float)Math.Sqrt(pX * pX + pY * pY + pZ * pZ);
+            cameraPosition.Z += (l * pZ) / (float)Math.Sqrt(pX * pX + pY * pY + pZ * pZ);
+
+            // Вычисление позиции, куда камера смотрит
+            cameraDirecton.X += (l * pX) / (float)Math.Sqrt(pX * pX + pY * pY + pZ * pZ);
+            cameraDirecton.X += (l * pY) / (float)Math.Sqrt(pX * pX + pY * pY + pZ * pZ);
+            cameraDirecton.X += (l * pZ) / (float)Math.Sqrt(pX * pX + pY * pY + pZ * pZ);
         }
 
         // Функция рисующая Тестовый квадрат
@@ -88,7 +106,17 @@ namespace Lab_One_OpenGL
             drawTexturedQuad();*/
             
             // Сфера
-            //drawSphere(1.5f, 10, 10, Color.BlueViolet, 8);
+           
+            /*GL.PushMatrix();
+            GL.Translate(0, 0, 0);
+            GL.Disable(EnableCap.ColorMaterial);
+            GL.Material(MaterialFace.Front, MaterialParameter.Diffuse, Color.Red);
+            GL.Material(MaterialFace.Front, MaterialParameter.Specular, Color.Yellow);
+            GL.Material(MaterialFace.Front, MaterialParameter.Shininess, 50);
+            GL.Material(MaterialFace.Front, MaterialParameter.Ambient, Color.Black);
+            GL.Rotate(rotateAngle/ 50, Vector3.UnitZ);*/
+            //drawSphere(1 , 20, 20, Color.Orange, 6);
+            //GL.PopMatrix();
 
             // Точка
             //drawPoint();
@@ -115,14 +143,16 @@ namespace Lab_One_OpenGL
             GL.PopMatrix();*/
 
             // Солнечная система
-             DrawSolSystem();
+            DrawSolSystem();
             // Фон для SolSystem
-            DrawSqCube(7); 
+            drawSphere(40, 20, 20, Color.Black, 10);
+            //DrawSqCube(7);
+            CallSpaceShip();
 
             // Координатные оси (X,Y,Z)
-            /*drawLine(1, 0, 0);
-            drawLine(0, 1, 0);
-            drawLine(0, 0, 1);*/         
+            /*drawLine(10, 0, 0);
+            drawLine(0, 10, 0);
+            drawLine(0, 0, 10);    */    
 
             // Шар - положение источника света
             /*GL.PushMatrix();
@@ -207,7 +237,7 @@ namespace Lab_One_OpenGL
             GL.Enable(EnableCap.ColorMaterial);
 
             // Установка позиции источника света
-            Vector4 lightPosition = new Vector4(1.0f, 1.0f, 4.0f, 0.0f);
+            Vector4 lightPosition = new Vector4(0.0f, 0.0f, 5.0f, 1.0f);
             GL.Light(LightName.Light0, LightParameter.Position, lightPosition);
 
             /*Vector4 lightPosition1 = new Vector4(-1.0f, -1.0f, 4.5f, 0.0f);
@@ -246,46 +276,155 @@ namespace Lab_One_OpenGL
             double x, y, z;
             for (iy = 0; iy < ny; ++iy)
             {
-                if (NumPlanet == 8)
+                if (NumPlanet != -1)
                 {
                     GL.Enable(EnableCap.Texture2D);
                     GL.BindTexture(TextureTarget.Texture2D, texturesIDs[NumPlanet]);
                 }
                 GL.Begin(PrimitiveType.QuadStrip);
-                //if (NumPlanet != 8)
-                    GL.Color3(ColorPlanet);
+                //GL.Color3(ColorPlanet);
 
                 for (ix = 0; ix <= nx; ++ix)
                 {
                     
                     x = r * Math.Sin(iy * Math.PI / ny) * Math.Cos(2 * ix * Math.PI / nx);
                     y = r * Math.Sin(iy * Math.PI / ny) * Math.Sin(2 * ix * Math.PI / nx);
-                    z = r * Math.Cos(iy * Math.PI / ny);
+                    z = r * Math.Cos(iy * Math.PI / ny); 
+
                     GL.Normal3(x, y, z);
+                    GL.TexCoord2((double)ix / (double)nx, (double)iy / (double)ny);
                     GL.Vertex3(x, y, z);
-                    if (NumPlanet == 8)
-                    {
-                        if ((ix % 2) == 0) GL.TexCoord2(0.0, 0.0);
-                        else GL.TexCoord2(1.0, 1.0);
-                    }
+                   
 
                     x = r * Math.Sin((iy + 1) * Math.PI / ny) * Math.Cos(2 * ix * Math.PI / nx);
                     y = r * Math.Sin((iy + 1) * Math.PI / ny) * Math.Sin(2 * ix * Math.PI / nx);
                     z = r * Math.Cos((iy + 1) * Math.PI / ny);
+
                     GL.Normal3(x, y, z);
+                    GL.TexCoord2((double)ix / (double)nx, (double)(iy + 1) / (double)ny);
                     GL.Vertex3(x, y, z);
-                    if (NumPlanet == 8)
-                    {
-                        if ((ix % 2) == 0) GL.TexCoord2(1.0, 0.0);
-                        else GL.TexCoord2(0.0, 1.0);
-                    }
+                    
                 }
                 GL.End();
-                if (NumPlanet == 8)
+                if (NumPlanet != -1)
                     GL.Disable(EnableCap.Texture2D);
             }
         }
 
+        private void GetTrap(double x, double y, double x1, double y1, double x2, double h1, double h2)
+        {
+            // Трапеция
+            GL.Begin(PrimitiveType.TriangleStrip);
+            GL.Color3(Color.Violet);
+            GL.Vertex3(x, y1, h2);
+            GL.Vertex3(x, y, h2);
+            GL.Vertex3(x2, y1, h2);
+            GL.Vertex3(x1, y, h2);
+            GL.Color3(Color.Turquoise);
+            GL.Vertex3(x1, y, h1);
+            GL.Vertex3(x2, y1, h2);
+            GL.Vertex3(x2, y1, h1);
+            GL.Vertex3(x, y1, h2);
+            GL.Vertex3(x, y1, h1);
+            GL.Vertex3(x, y, h2);
+            GL.Vertex3(x, y, h1);
+            GL.Vertex3(x1, y, h2);
+            GL.Color3(Color.Transparent);
+            GL.Vertex3(x1, y, h1);
+            GL.Vertex3(x, y, h1);
+            GL.Vertex3(x2, y1, h1);
+            GL.Vertex3(x, y1, h1);
+            GL.End();
+        }
+
+        private void GetMotor(int sgn)
+        {
+            GetTrap(sgn * 0.2, 0.06, sgn * 0.31, 0.54, sgn * 0.26, 0.05, 0);
+            GetTrap(sgn * 0.2, -0.19, sgn * 0.31, 0.06, sgn * 0.31, 0.05, 0);
+            GetTrap(sgn * 0.2, -0.37, sgn * 0.31, -0.19, sgn * 0.31, 0.06, 0);
+            GetTrap(sgn * 0.2, -0.37, sgn * 0.31, -0.19, sgn * 0.31, -0.01, 0);
+            GetTrap(sgn * 0.22, -0.42, sgn * 0.29, -0.16, sgn * 0.29, 0.06, 0);
+            GetTrap(sgn * 0.22, -0.42, sgn * 0.29, -0.16, sgn * 0.29, -0.01, 0);
+            GetTrap(sgn * 0.2, -0.62, sgn * 0.225, -0.39, sgn * 0.225, 0.05, 0);
+            GetTrap(sgn * 0.285, -0.62, sgn * 0.31, -0.39, sgn * 0.31, 0.05, 0);
+            GetTrap(sgn * 0.22, -0.62, sgn * 0.285, -0.56, sgn * 0.285, 0.01, -0.01);
+            GetTrap(sgn * 0.22, -0.62, sgn * 0.285, -0.56, sgn * 0.285, 0.06, 0.04);
+        }
+
+        private void DrawSpaceShip()
+        {
+            // Основание
+            GL.Begin(PrimitiveType.TriangleStrip);
+            GL.Color3(Color.White);
+            GL.Vertex3(-0.15, 0, 0);
+            GL.Vertex3(-0.025, 1.5, 0);
+            GL.Vertex3(-0.05, -0.5, 0);
+            GL.Vertex3(0.025, 1.5, 0);
+            GL.Vertex3(0.05, -0.5, 0);
+            GL.Vertex3(0.15, 0, 0);
+
+            GL.Color3(Color.Red);
+            GL.Vertex3(0.1, 0, 0.13);
+            GL.Vertex3(0.025, 1.5, 0);
+            GL.Vertex3(0.025, 1.5, 0.01);
+            GL.Vertex3(-0.025, 1.5, 0.01);
+            GL.Vertex3(-0.025, 1.5, 0);
+            GL.Vertex3(-0.1, 0, 0.13);
+            GL.Vertex3(-0.15, 0, 0);
+            GL.Vertex3(-0.05, -0.5, 0.01);
+            GL.Vertex3(-0.05, -0.5, 0);
+            GL.Vertex3(0.05, -0.5, 0);
+            GL.Vertex3(0.05, -0.5, 0.01);
+            GL.Vertex3(0.1, 0, 0.13);
+
+            GL.Color3(Color.SlateGray);
+            GL.Vertex3(-0.05, -0.5, 0.01);
+            GL.Vertex3(-0.1, 0, 0.13);
+            GL.Vertex3(0.1, 0, 0.13);
+            GL.Vertex3(-0.025, 1.5, 0.01);
+            GL.Vertex3(0.025, 1.5, 0.01);
+
+            GL.End();
+
+            // Крылья
+            GL.Begin(PrimitiveType.Triangles);
+            GL.Color3(Color.Yellow);
+            GL.Vertex3(0.08, 0.4, 0.02);
+            GL.Vertex3(0.08, -0.24, 0.02);
+            GL.Vertex3(0.5, -0.24, 0.02);
+            GL.End();
+
+            GL.Begin(PrimitiveType.Triangles);
+            GL.Color3(Color.Yellow);
+            GL.Vertex3(-0.08, 0.4, 0.02);
+            GL.Vertex3(-0.08, -0.24, 0.02);
+            GL.Vertex3(-0.5, -0.24, 0.02);
+            GL.End();
+
+            GetMotor(1);
+            GetMotor(-1);
+
+        }
+        // Функция задает координаты корабля
+        private void CallSpaceShip()
+        {
+            float pX = cameraDirecton.X - cameraPosition.X;
+            float pY = cameraDirecton.Y - cameraPosition.Y;
+            float pZ = cameraDirecton.Z - cameraPosition.Z;
+
+            GL.PushMatrix();
+            GL.Translate(
+                (2 * pX) / (float)Math.Sqrt(pX * pX + pY * pY + pZ * pZ) + cameraPosition.X,
+                (2 * pY) / (float)Math.Sqrt(pX * pX + pY * pY + pZ * pZ) + cameraPosition.Y,
+                (2 * pZ) / (float)Math.Sqrt(pX * pX + pY * pY + pZ * pZ) + cameraPosition.Z);
+            //drawSphere(0.5, 20, 20, Color.Black, 6);
+            /*int alf = (int)(Math.PI / 180.0f * latitude);
+            int bet = (int)(Math.PI / 180.0f * longitude);
+            GL.Rotate(alf, Vector3.UnitZ);
+            GL.Rotate(bet, Vector3.UnitY);*/
+            DrawSpaceShip();
+            GL.PopMatrix();
+        }
         // Функция рисующая Точку
         private void drawPoint()
         {
@@ -305,9 +444,9 @@ namespace Lab_One_OpenGL
             GL.LineWidth(5);
 
             GL.Begin(PrimitiveType.Lines);
-            GL.Color3(Color.Black);
+            GL.Color3(Color.White);
             GL.Vertex3(0, 0, 0);
-            GL.Color3(Color.Black);
+            GL.Color3(Color.White);
             GL.Vertex3(x, y, z);
             GL.End();
         }
@@ -492,7 +631,7 @@ namespace Lab_One_OpenGL
             // Солнце
             GL.PushMatrix();
             GL.Rotate((rotateAngle * 24.47f / 50), Vector3.UnitZ);
-            drawSphere(1.0f, 20, 20, Color.Yellow, 8);
+            drawSphere(1.0f, 20, 20, Color.Yellow, 1);
             GL.PopMatrix();
 
             Color CCorcle = Color.White;
@@ -517,7 +656,7 @@ namespace Lab_One_OpenGL
 
             // GL.Rotate(rotateAngle * <скорость вращения вокруг своей оси> / 50, Vector3.UnitZ);
             GL.Rotate(rotateAngle * 88 / 50, Vector3.UnitZ);
-            drawSphere(0.111f / 3, 20, 20, Color.Orange, 10);
+            drawSphere(0.111f / 3, 20, 20, Color.Orange, 2);
             GL.PopMatrix();
             
             // Венера
@@ -527,7 +666,7 @@ namespace Lab_One_OpenGL
                 Math.Cos(rotateAngle / 18.46) * 0.733 * 3,
                 0);
             GL.Rotate(rotateAngle * 200 / 50, Vector3.UnitZ);
-            drawSphere(0.291f / 3, 20, 20, Color.LightBlue, 100);
+            drawSphere(0.291f / 3, 20, 20, Color.LightBlue, 3);
             GL.PopMatrix();
 
             // Земля
@@ -537,7 +676,7 @@ namespace Lab_One_OpenGL
                 Math.Cos(rotateAngle / 30) * 3,
                 0);
             GL.Rotate(rotateAngle / 50, Vector3.UnitZ);
-            drawSphere(0.3f / 3, 20, 20, Color.DarkBlue, 1);
+            drawSphere(0.3f / 3, 20, 20, Color.DarkBlue, 4);
             GL.PopMatrix();
 
             //Луна
@@ -546,7 +685,7 @@ namespace Lab_One_OpenGL
                 Math.Sin(rotateAngle / 2.3) * 0.05 * 3 + Math.Sin(rotateAngle / 30) * 3,
                 Math.Cos(rotateAngle / 2.3) * 0.05 * 3 + Math.Cos(rotateAngle / 30) * 3,
                 0);
-            drawSphere(0.081f / 3, 20, 20, Color.Gray, 100);
+            drawSphere(0.081f / 3, 20, 20, Color.Gray, 6);
             GL.PopMatrix();
 
             //Марс
@@ -556,7 +695,7 @@ namespace Lab_One_OpenGL
                 Math.Cos(rotateAngle / 56.46) * 1.52 * 3,
                 0);
             GL.Rotate(rotateAngle * 1.025f / 50, Vector3.UnitZ);
-            drawSphere(0.456f / 3, 20, 20, Color.Red, 13);
+            drawSphere(0.456f / 3, 20, 20, Color.Red, 7);
             GL.PopMatrix();
 
             //Юпитер
@@ -566,7 +705,7 @@ namespace Lab_One_OpenGL
                 Math.Cos(rotateAngle / 355.8) * 5.19 * 3,
                 0);
             GL.Rotate(rotateAngle * 9.92f / 50, Vector3.UnitZ);
-            drawSphere(3.384f / 3, 20, 20, Color.Orange, 14);
+            drawSphere(3.384f / 3, 20, 20, Color.Orange, 8);
             GL.PopMatrix();
 
             //Сатурн
@@ -576,7 +715,7 @@ namespace Lab_One_OpenGL
                 Math.Cos(rotateAngle / 883.81) * 9.53 * 3,
                 0);
             GL.Rotate(rotateAngle * 10.23f / 50, Vector3.UnitZ);
-            drawSphere(2.835f / 3, 20, 20, Color.Peru, 15); 
+            drawSphere(2.835f / 3, 20, 20, Color.Peru, 9); 
 
             //Кольца Сатурна
             double i = 1.1;
@@ -782,7 +921,6 @@ namespace Lab_One_OpenGL
 
             // Возможна реализация через остаток, для плавности переходов
         }
-
 
         // Функция рисующая комнату
         private void DrawRoom()
