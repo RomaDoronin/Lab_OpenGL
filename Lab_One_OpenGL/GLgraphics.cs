@@ -7,17 +7,46 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Media; // Для музыки
 
 namespace Lab_One_OpenGL
 {
     class GLgraphics
     {
+        public int flag = 0; // Колличесто выпущенных снаярдов
+        public float DistanceCentrel = 0.1f; // Расстояние корабля до центра
+        public const int MaxShots = 10; // Размер "магазина" коробля
+        public float[] rotateB = new float[MaxShots]; // Счетчик для выстрела
         public float rotateAngle;
-        public List<int> texturesIDs = new List<int>();
+        public double[] rotateD = new double[25]/* = 0.03*/; // Счетчик для взрыва
+        public List<int> texturesIDs = new List<int>(); // Список текстур
+        public int sum = 1;
 
-        Vector3 cameraPosition = new Vector3(3, 3, 3); //Позиция камеры
-        Vector3 cameraDirecton = new Vector3(0, 0, 0); //Направление камеры
+        public int[] Game = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+        // Массивы, хранящие определители координат снарядов
+        public float[] pX = new float[MaxShots];
+        public float[] pY = new float[MaxShots];
+        public float[] pZ = new float[MaxShots];
+
+        // Массивы, хранящие определители координат кораблей
+        public float[] psX = new float[25];
+        public float[] psY = new float[25];
+        public float[] psZ = new float[25];
+
+        //private int[] ChekTarget = new int[25]; // Идентификатор попадания
+        private int[] ChekTarget = { 1, 1, 1, 1, 1, 1, 1, 1,
+                                       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+
+        Vector3 cameraPosition = new Vector3(2, 2, 1.2f); //Позиция камеры
+        Vector3 cameraDirecton = new Vector3(2, 3, 1); //Направление камеры
         Vector3 cameraUp = new Vector3(0, 0, 1);
+
+        //!!!!!!!!!!!!!!!!!!!!
+        Vector3 ShipPosition = new Vector3(2, 2, 2); // Позиция камеры
+        Vector3 ShotPosition = new Vector3(2, 2, 2); // Позиция снаряда
+        Vector3 SightPosition = new Vector3(2, 2, 2); // Позиция прицела
+        //Vector3 ShipDirecton = new Vector3(0, 0, 0); //Направление корабля
 
 
         public float latitude = 47.98f;
@@ -55,6 +84,8 @@ namespace Lab_One_OpenGL
                 (float)(radius * Math.Cos(Math.PI / 180.0f * latitude) * Math.Cos(Math.PI / 180.0f * longitude)),
                 (float)(radius * Math.Cos(Math.PI / 180.0f * latitude) * Math.Sin(Math.PI / 180.0f * longitude)),
                 (float)(radius * Math.Sin(Math.PI / 180.0f * latitude)));
+
+            //cameraDirecton = ShipDirecton;
         }
 
         // Функция для подсчета координат движения
@@ -76,96 +107,104 @@ namespace Lab_One_OpenGL
             cameraDirecton.X += (l * pZ) / (float)Math.Sqrt(pX * pX + pY * pY + pZ * pZ);
         }
 
-        // Функция рисующая Тестовый квадрат
-        private void drawTestQuad()
-        {
-            GL.Begin(PrimitiveType.Quads);
-            GL.Color3(Color.Red);
-            GL.Vertex3(-1.0f, -1.0f, -1.0f);
-            GL.Color3(Color.Red);
-            GL.Vertex3(-1.0f, 1.0f, -1.0f);
-            GL.Color3(Color.Red);
-            GL.Vertex3(1.0f, 1.0f, -1.0f);
-            GL.Color3(Color.Red);
-            GL.Vertex3(1.0f, -1.0f, -1.0f);
-            GL.End();
-        }
-
         public void Render()
         {
-            // Тестовый крадрат
-            //drawTestQuad();
+                // Солнечная система
+                DrawSolSystem();
+                // Фон для SolSystem
+                drawSphere(40, 20, 20, 10);
+                CallSpaceShip();
+                DrawSight();
 
-            // Трансформированный квадрат
-            /*GL.PushMatrix();
-            GL.Translate(1, 1, 1);
-            GL.Rotate(rotateAngle, Vector3.UnitZ);
-            GL.Scale(0.5f, 0.5f, 0.5f);
-            drawTestQuad();
-            GL.PopMatrix();
-            drawTexturedQuad();*/
-            
-            // Сфера
-           
-            /*GL.PushMatrix();
-            GL.Translate(0, 0, 0);
-            GL.Disable(EnableCap.ColorMaterial);
-            GL.Material(MaterialFace.Front, MaterialParameter.Diffuse, Color.Red);
-            GL.Material(MaterialFace.Front, MaterialParameter.Specular, Color.Yellow);
-            GL.Material(MaterialFace.Front, MaterialParameter.Shininess, 50);
-            GL.Material(MaterialFace.Front, MaterialParameter.Ambient, Color.Black);
-            GL.Rotate(rotateAngle/ 50, Vector3.UnitZ);*/
-            //drawSphere(1 , 20, 20, Color.Orange, 6);
-            //GL.PopMatrix();
+                // Рисование Космических корабля!
+                if ((DistanceCentrel > -1) && (DistanceCentrel < 45) /*|| (DistanceCentrel > 50)*/)
+                {
+                    AddShip(4.3f + 35, 4.6f, 7.1f, 0, DistanceCentrel);
+                    AddShip(9.9f + 42, -7.3f, 2.1f, 1, DistanceCentrel); //AddShip(9 + xe, 5.6f + ye, 4.9f + ze, 10, DistanceCentrel);
+                    AddShip(1 - 47, 4.9f, 7.5f, 2, DistanceCentrel); //AddShip(5 + xe, 1.4f + ye, 1.8f + ze, 11, DistanceCentrel);
+                    AddShip(6.9f - 37, -3.9f, 6.5f, 3, DistanceCentrel); //AddShip(4.6f + xe, 4.2f + ye, 1 + ze, 12, DistanceCentrel);
+                    AddShip(5, 9.3f + 54, 7.8f, 4, DistanceCentrel); //AddShip(2.8f + xe, 6.2f + ye, 3.9f + ze, 13, DistanceCentrel);
+                    AddShip(-5.6f, 9.7f + 36, 1.5f, 5, DistanceCentrel); //AddShip(9.9f + xe, 8.5f + ye, 1.7f + ze, 14, DistanceCentrel);
+                    AddShip(-1.6f, 8.9f - 66, 1.6f, 6, DistanceCentrel); //AddShip(6.8f + xe, 2.6f + ye, 9.6f + ze, 15, DistanceCentrel);
+                    AddShip(9.8f, 7.2f - 49, 2.4f, 7, DistanceCentrel); //AddShip(2.3f + xe, 6.9f + ye, 2.4f + ze, 16, DistanceCentrel);
+                    //AddShip(4.7f + xe, (-1) * (10 + ye), 2.7f + ze, 8, DistanceCentrel); //AddShip(2.5f + xe, 2.9f + ye, 5.1f + ze, 17, DistanceCentrel);
+                    //AddShip(9.1f + xe, (-1) * (5.3f + ye), 1.1f + ze, 9, DistanceCentrel); //AddShip(5.4f + xe, 4.7f + ye, 5.2f + ze, 18, DistanceCentrel);
+                    DistanceCentrel += 0.02f;
+                }
+                else if (sum != 1) Game[8] += 10;
+        }
 
-            // Точка
-            //drawPoint();
+        // Функция добавляющая корабль
+        private void AddShip(float xTarget, float yTarget, float zTarget, int iTarget, float l)
+        {
+            if (l == 0.1f)
+            {
+                psX[iTarget] = 0 - xTarget;
+                psY[iTarget] = 0 - yTarget;
+                psZ[iTarget] = 0 - zTarget;
+            }
 
-            // Линия
-            //drawLine(1, 1, 1);
+                xTarget += ((l + 2) * psX[iTarget]) / (float)Math.Sqrt(psX[iTarget] * psX[iTarget] + psY[iTarget] * psY[iTarget] + psZ[iTarget] * psZ[iTarget]);
+                yTarget += ((l + 2) * psY[iTarget]) / (float)Math.Sqrt(psX[iTarget] * psX[iTarget] + psY[iTarget] * psY[iTarget] + psZ[iTarget] * psZ[iTarget]);
+                zTarget += ((l + 2) * psZ[iTarget]) / (float)Math.Sqrt(psX[iTarget] * psX[iTarget] + psY[iTarget] * psY[iTarget] + psZ[iTarget] * psZ[iTarget]);
 
-            // Окружность
-            //drawCircle(1, Color.Red, false);
+            HitTheTarget(xTarget, yTarget, zTarget,
+            1.5, 0.4, 0.8, iTarget);
 
-            // Треугольнкик
-            //drawTriangle();
+            if ((ChekTarget[iTarget] == 1) || (ChekTarget[iTarget] == 2))
+            {
+                    GL.PushMatrix();
+                    GL.Translate(xTarget, yTarget, zTarget);
 
-            // Шестиугольник
-            //drawTriangleStrip();
+                    if (iTarget < 2)
+                        GL.Rotate(180, Vector3.UnitZ);
+                    else if ((iTarget < 4) && (iTarget >= 2))
+                        GL.Rotate(90, Vector3.UnitZ);
+                    else if ((iTarget < 6) && (iTarget >= 4))
+                        GL.Rotate(180, Vector3.UnitZ);
+                    else if ((iTarget < 8) && (iTarget >= 6))
+                        GL.Rotate(90, Vector3.UnitZ);
 
-            // Пирамида четырехугольная без основания
-            //drawTriangleFun();  
+                    DrawSpaceShip();
+                    GL.PopMatrix();
+            }
 
-            // Куб с текстурами
-            /*GL.PushMatrix();
-            GL.Scale(0.5f, 0.5f, 0.5f);
-            DrawCube();
-            GL.PopMatrix();*/
 
-            // Солнечная система
-            DrawSolSystem();
-            // Фон для SolSystem
-            drawSphere(40, 20, 20, Color.Black, 10);
-            //DrawSqCube(7);
-            CallSpaceShip();
+        }
 
-            // Координатные оси (X,Y,Z)
-            /*drawLine(10, 0, 0);
-            drawLine(0, 10, 0);
-            drawLine(0, 0, 10);    */    
+        // Функция отслеживающая попадания снарядов
+        // ROD - The Radius Of Destruction
+        private void HitTheTarget(double xTarget, double yTarget, double zTarget,
+            double xROD, double yROD, double zROD, int iTarget)
+        {
+            //if (ChekTarget[iTarget] == 1)
+            //{
+                for (int i = 0; i < flag; i++)
+                {
+                    rotateB[i] += 0.05f;
+                    if (rotateB[i] >= 30) // (30) - Дальность полета 
+                    { }
+                    else
+                        Shot(rotateB[i], i);
 
-            // Шар - положение источника света
-            /*GL.PushMatrix();
-            GL.Translate(0.0f, 0.0f, 1.1f);
-            drawSphere(0.2f, 20, 20, Color.Yellow, 1);
-            GL.PopMatrix();*/
-
-            // Маятник
-            //DrawPendulum();
-
-            // Комната
-            //DrawRoom();
-
+                    // Проверка на попадание снаряда в корабль
+                    if ((ShotPosition.X < (xTarget + xROD + 0.05)) && (ShotPosition.X > (xTarget - xROD - 0.05)) &&
+                        (ShotPosition.Y < (yTarget + yROD + 0.05)) && (ShotPosition.Y > (yTarget - yROD - 0.05)) &&
+                        (ShotPosition.Z < (zTarget + zROD + 0.05)) && (ShotPosition.Z > (zTarget - zROD - 0.05)))
+                    {
+                        rotateB[i] = 30;
+                        ChekTarget[iTarget] = 2;
+                    }
+                }
+            //}
+            /*else*/ if (ChekTarget[iTarget] == 2)
+            {
+                GL.PushMatrix();
+                GL.Translate(xTarget, yTarget, zTarget);
+                Boom(1.1, iTarget);
+                GL.PopMatrix();
+                Game[iTarget] = 1;
+            }
         }
 
         // Функция загружающая текстуры
@@ -265,7 +304,7 @@ namespace Lab_One_OpenGL
         }
 
         // Функция рисующая Сферу
-        private void drawSphere(double r, int nx, int ny, Color ColorPlanet, int NumPlanet)
+        private void drawSphere(double r, int nx, int ny, int NumPlanet)
         {
             // r - радиус сферы
             // nx * ny - колличество полигонов(четырехугольников) из которых будет собрана сфера
@@ -282,7 +321,7 @@ namespace Lab_One_OpenGL
                     GL.BindTexture(TextureTarget.Texture2D, texturesIDs[NumPlanet]);
                 }
                 GL.Begin(PrimitiveType.QuadStrip);
-                //GL.Color3(ColorPlanet);
+                GL.Color3(Color.Transparent);
 
                 for (ix = 0; ix <= nx; ++ix)
                 {
@@ -311,16 +350,17 @@ namespace Lab_One_OpenGL
             }
         }
 
+        // Функция рисующая объемную трапецию
         private void GetTrap(double x, double y, double x1, double y1, double x2, double h1, double h2)
         {
             // Трапеция
             GL.Begin(PrimitiveType.TriangleStrip);
-            GL.Color3(Color.Violet);
+            GL.Color3(Color.Black);
             GL.Vertex3(x, y1, h2);
             GL.Vertex3(x, y, h2);
             GL.Vertex3(x2, y1, h2);
             GL.Vertex3(x1, y, h2);
-            GL.Color3(Color.Turquoise);
+            GL.Color3(Color.Red);
             GL.Vertex3(x1, y, h1);
             GL.Vertex3(x2, y1, h2);
             GL.Vertex3(x2, y1, h1);
@@ -329,7 +369,7 @@ namespace Lab_One_OpenGL
             GL.Vertex3(x, y, h2);
             GL.Vertex3(x, y, h1);
             GL.Vertex3(x1, y, h2);
-            GL.Color3(Color.Transparent);
+            GL.Color3(Color.White);
             GL.Vertex3(x1, y, h1);
             GL.Vertex3(x, y, h1);
             GL.Vertex3(x2, y1, h1);
@@ -337,6 +377,7 @@ namespace Lab_One_OpenGL
             GL.End();
         }
 
+        // Функция рисующая двигатель
         private void GetMotor(int sgn)
         {
             GetTrap(sgn * 0.2, 0.06, sgn * 0.31, 0.54, sgn * 0.26, 0.05, 0);
@@ -351,6 +392,7 @@ namespace Lab_One_OpenGL
             GetTrap(sgn * 0.22, -0.62, sgn * 0.285, -0.56, sgn * 0.285, 0.06, 0.04);
         }
 
+        // Функция рисующая космический корабль
         private void DrawSpaceShip()
         {
             // Основание
@@ -389,22 +431,79 @@ namespace Lab_One_OpenGL
             // Крылья
             GL.Begin(PrimitiveType.Triangles);
             GL.Color3(Color.Yellow);
-            GL.Vertex3(0.08, 0.4, 0.02);
-            GL.Vertex3(0.08, -0.24, 0.02);
-            GL.Vertex3(0.5, -0.24, 0.02);
+            GL.Vertex3(0.08, 0.4, 0.04);
+            GL.Vertex3(0.08, -0.24, 0.04);
+            GL.Vertex3(0.5, -0.24, -0.09);
             GL.End();
 
             GL.Begin(PrimitiveType.Triangles);
             GL.Color3(Color.Yellow);
-            GL.Vertex3(-0.08, 0.4, 0.02);
-            GL.Vertex3(-0.08, -0.24, 0.02);
-            GL.Vertex3(-0.5, -0.24, 0.02);
+            GL.Vertex3(-0.08, 0.4, 0.04);
+            GL.Vertex3(-0.08, -0.24, 0.04);
+            GL.Vertex3(-0.5, -0.24, -0.09);
             GL.End();
 
+            // Двигатели
+            GL.PushMatrix();
+            GL.Translate(0, 0, 0.06);
+            GL.Rotate(22, Vector3.UnitY);
             GetMotor(1);
+            GL.PopMatrix();
+
+            GL.PushMatrix();
+            GL.Translate(0, 0, 0.06);
+            GL.Rotate(-22, Vector3.UnitY);
             GetMotor(-1);
+            GL.PopMatrix();
+
+            GL.PushMatrix();
+            GL.Translate(0.22, -0.24, -0.02);
+            GL.Scale(1, 0.8f, 0.8f);
+            GL.Rotate(22, Vector3.UnitY);
+            GetMotor(1);
+            GL.PopMatrix();
+
+            GL.PushMatrix();
+            GL.Translate(-0.22, -0.24, -0.02);
+            GL.Scale(1, 0.8f, 0.8f);
+            GL.Rotate(-22, Vector3.UnitY);
+            GetMotor(-1);
+            GL.PopMatrix();
 
         }
+
+        // Функия считающая Угол поворота корабля
+        private float CalcAlf(int index)
+        {
+            float result;
+
+            double a2, b2, c2; // Длины сторон треугольника по которому вычисляем угол
+
+            if (index == 1)
+            {
+                a2 = (cameraDirecton.X - (ShipPosition.X + 1)) * (cameraDirecton.X - (ShipPosition.X + 1)) +
+                    (cameraDirecton.Z - (ShipPosition.Z + 1)) * (cameraDirecton.Z - (ShipPosition.Z + 1));
+                b2 = (cameraDirecton.X - ShipPosition.X) * (cameraDirecton.X - ShipPosition.X) +
+                    (cameraDirecton.Z - ShipPosition.Z) * (cameraDirecton.Z - ShipPosition.Z);
+                c2 = 1;
+
+                result = (float)Math.Acos((b2 + c2 - a2) / (2 * Math.Sqrt(b2) * Math.Sqrt(c2)));
+            }
+            else
+            {
+                a2 = (ShipPosition.Y - cameraDirecton.Y) * (ShipPosition.Y - cameraDirecton.Y);
+                b2 = (ShipPosition.X - cameraDirecton.X) * (ShipPosition.X - cameraDirecton.X) +
+                    (ShipPosition.Z - cameraDirecton.Z) * (ShipPosition.Z - cameraDirecton.Z);
+                c2 = (ShipPosition.X - cameraDirecton.X) * (ShipPosition.X - cameraDirecton.X) +
+                    (ShipPosition.Y - cameraDirecton.Y) * (ShipPosition.Y - cameraDirecton.Y) +
+                    (ShipPosition.Z - cameraDirecton.Z) * (ShipPosition.Z - cameraDirecton.Z);
+
+                result = (float)Math.Acos((b2 + c2 - a2) / (2 * Math.Sqrt(b2) * Math.Sqrt(c2)));
+            }
+
+            return (result);
+        }
+
         // Функция задает координаты корабля
         private void CallSpaceShip()
         {
@@ -412,29 +511,154 @@ namespace Lab_One_OpenGL
             float pY = cameraDirecton.Y - cameraPosition.Y;
             float pZ = cameraDirecton.Z - cameraPosition.Z;
 
+            ShipPosition.X = (1.5f * pX) / (float)Math.Sqrt(pX * pX + pY * pY + pZ * pZ) + cameraPosition.X;
+            ShipPosition.Y = (1.5f * pY) / (float)Math.Sqrt(pX * pX + pY * pY + pZ * pZ) + cameraPosition.Y;
+            ShipPosition.Z = (1.5f * pZ) / (float)Math.Sqrt(pX * pX + pY * pY + pZ * pZ) + cameraPosition.Z - 0.3f;
+            
             GL.PushMatrix();
-            GL.Translate(
-                (2 * pX) / (float)Math.Sqrt(pX * pX + pY * pY + pZ * pZ) + cameraPosition.X,
-                (2 * pY) / (float)Math.Sqrt(pX * pX + pY * pY + pZ * pZ) + cameraPosition.Y,
-                (2 * pZ) / (float)Math.Sqrt(pX * pX + pY * pY + pZ * pZ) + cameraPosition.Z);
-            //drawSphere(0.5, 20, 20, Color.Black, 6);
-            /*int alf = (int)(Math.PI / 180.0f * latitude);
-            int bet = (int)(Math.PI / 180.0f * longitude);
-            GL.Rotate(alf, Vector3.UnitZ);
-            GL.Rotate(bet, Vector3.UnitY);*/
-            DrawSpaceShip();
+            GL.Translate(ShipPosition.X, ShipPosition.Y, ShipPosition.Z);
+
+            /*GL.Rotate(CalcAlf(1), Vector3.UnitX); // Разворот по Y
+            GL.Rotate(CalcAlf(2), Vector3.UnitY); // Разворот по Z*/
+            
+            GL.Scale(0.8, 0.8, 0.8);
+            //DrawSpaceShip();
+            drawSphere(0.2 , 40, 40, 11);
             GL.PopMatrix();
         }
-        // Функция рисующая Точку
-        private void drawPoint()
-        {
-            // Задание размера точки
-            GL.PointSize(5);
 
-            GL.Begin(PrimitiveType.Points);
-            GL.Color3(Color.Black);
-            GL.Vertex3(0, 0, 0);
-            GL.End();
+        // Функция рисующая выстрел
+        public void Shot(float l, int ii)
+        {
+            if (l == 0.1f)
+            {
+                pX[ii] = cameraDirecton.X - cameraPosition.X;
+                pY[ii] = cameraDirecton.Y  - cameraPosition.Y;
+                pZ[ii] = cameraDirecton.Z - cameraPosition.Z;
+            }
+
+            ShotPosition.X = ((l + 2) * pX[ii]) / (float)Math.Sqrt(pX[ii] * pX[ii] + pY[ii] * pY[ii] + pZ[ii] * pZ[ii]) + cameraPosition.X;
+            ShotPosition.Y = ((l + 2) * pY[ii]) / (float)Math.Sqrt(pX[ii] * pX[ii] + pY[ii] * pY[ii] + pZ[ii] * pZ[ii]) + cameraPosition.Y;
+            ShotPosition.Z = ((l + 2) * pZ[ii]) / (float)Math.Sqrt(pX[ii] * pX[ii] + pY[ii] * pY[ii] + pZ[ii] * pZ[ii]) + cameraPosition.Z - (0.4f / (rotateB[ii] + 1));
+
+            GL.PushMatrix();
+            GL.Translate(ShotPosition.X, ShotPosition.Y, ShotPosition.Z);
+            drawSphere(0.05, 20, 20, 12);
+            GL.PopMatrix();
+        }
+
+        // Функция рисующая прицел
+        private void DrawSight()
+        {
+            float pX = cameraDirecton.X - cameraPosition.X;
+            float pY = cameraDirecton.Y - cameraPosition.Y;
+            float pZ = cameraDirecton.Z - cameraPosition.Z;
+
+            SightPosition.X = (5f * pX) / (float)Math.Sqrt(pX * pX + pY * pY + pZ * pZ) + cameraPosition.X;
+            SightPosition.Y = (5f * pY) / (float)Math.Sqrt(pX * pX + pY * pY + pZ * pZ) + cameraPosition.Y;
+            SightPosition.Z = (5f * pZ) / (float)Math.Sqrt(pX * pX + pY * pY + pZ * pZ) + cameraPosition.Z;
+
+            GL.PushMatrix();
+
+            GL.Translate(SightPosition.X, SightPosition.Y, SightPosition.Z);
+            GL.Rotate(90, Vector3.UnitX);
+
+            {
+                GL.Begin(PrimitiveType.Triangles);
+                GL.Color3(Color.White);
+                GL.Vertex3(0, -0.15, 0);
+                GL.Vertex3(0.04, -0.2, 0);
+                GL.Vertex3(-0.04, -0.2, 0);
+                GL.End();
+
+                GL.Begin(PrimitiveType.Triangles);
+                GL.Color3(Color.White);
+                GL.Vertex3(0, 0.15, 0);
+                GL.Vertex3(0.04, 0.2, 0);
+                GL.Vertex3(-0.04, 0.2, 0);
+                GL.End();
+
+                GL.Begin(PrimitiveType.Triangles);
+                GL.Color3(Color.White);
+                GL.Vertex3(-0.15, 0, 0);
+                GL.Vertex3(-0.2, 0.04, 0);
+                GL.Vertex3(-0.2,-0.04, 0);
+                GL.End();
+
+                GL.Begin(PrimitiveType.Triangles);
+                GL.Color3(Color.White);
+                GL.Vertex3(0.15, 0, 0);
+                GL.Vertex3(0.2, 0.04, 0);
+                GL.Vertex3(0.2, -0.04, 0);
+                GL.End();
+
+                //--------------------------------
+
+                GL.Begin(PrimitiveType.Triangles);
+                GL.Color3(Color.White);
+                GL.Vertex3(0, -0.15, 0);
+                GL.Vertex3(0, -0.2, 0.04);
+                GL.Vertex3(0, -0.2, -0.04);
+                GL.End();
+
+                GL.Begin(PrimitiveType.Triangles);
+                GL.Color3(Color.White);
+                GL.Vertex3(0, 0.15, 0);
+                GL.Vertex3(0, 0.2, 0.04);
+                GL.Vertex3(0, 0.2, -0.04);
+                GL.End();
+
+                GL.Begin(PrimitiveType.Triangles);
+                GL.Color3(Color.White);
+                GL.Vertex3(0, 0, -0.15);
+                GL.Vertex3(0, 0.04, -0.2);
+                GL.Vertex3(0, -0.04, -0.2);
+                GL.End();
+
+                GL.Begin(PrimitiveType.Triangles);
+                GL.Color3(Color.White);
+                GL.Vertex3(0, 0, 0.15);
+                GL.Vertex3(0, 0.04, 0.2);
+                GL.Vertex3(0, -0.04, 0.2);
+                GL.End();
+            }
+
+            /*drawLine(0.15, 0, 0);
+            drawLine(0, 0.15, 0);
+            drawLine(-0.15, 0, 0);
+            drawLine(0, -0.15, 0);
+            drawLine(0, 0, 0.15);
+            drawLine(0, 0, -0.15);*/
+            drawCircle(0.1, Color.White, false);
+
+            GL.PopMatrix();
+
+            GL.PushMatrix();
+            GL.Translate(SightPosition.X, SightPosition.Y, SightPosition.Z);
+            GL.Rotate(90, Vector3.UnitY);
+            drawCircle(0.1, Color.White, false);
+            GL.PopMatrix();
+        }
+
+        // Функция рисующая Взрыв
+        private void Boom(double RadiusBoom, int iTarget)
+        {
+            if (rotateD[iTarget] == 0)
+            {
+                // Звук взрыва
+                SoundPlayer sp = new SoundPlayer("Sound/Boom_02.wav");
+                sp.Play();
+            }
+            if (rotateD[iTarget] <= RadiusBoom)
+            {
+                rotateD[iTarget] += 0.003;
+                GL.Scale(rotateD[iTarget], rotateD[iTarget], rotateD[iTarget]);
+                drawSphere(RadiusBoom, 20, 20, 13);
+            }
+            else
+            {
+                ChekTarget[iTarget] = 0;
+            }
         }
 
         // Функция рисующая Линию
@@ -448,19 +672,6 @@ namespace Lab_One_OpenGL
             GL.Vertex3(0, 0, 0);
             GL.Color3(Color.White);
             GL.Vertex3(x, y, z);
-            GL.End();
-        }
-
-        // Функция рисующая  Треугольник
-        private void drawTriangle()
-        {
-            GL.Begin(PrimitiveType.Triangles);
-            GL.Color3(Color.Blue);
-            GL.Vertex3(-1.0f, -1.0f, -1.0f);
-            GL.Color3(Color.Red);
-            GL.Vertex3(-1.0f, 1.0f, -1.0f);
-            GL.Color3(Color.Green);
-            GL.Vertex3(1.0f, 1.0f, -1.0f);
             GL.End();
         }
 
@@ -631,7 +842,7 @@ namespace Lab_One_OpenGL
             // Солнце
             GL.PushMatrix();
             GL.Rotate((rotateAngle * 24.47f / 50), Vector3.UnitZ);
-            drawSphere(1.0f, 20, 20, Color.Yellow, 1);
+            drawSphere(1.0f, 20, 20, 1);
             GL.PopMatrix();
 
             Color CCorcle = Color.White;
@@ -656,7 +867,7 @@ namespace Lab_One_OpenGL
 
             // GL.Rotate(rotateAngle * <скорость вращения вокруг своей оси> / 50, Vector3.UnitZ);
             GL.Rotate(rotateAngle * 88 / 50, Vector3.UnitZ);
-            drawSphere(0.111f / 3, 20, 20, Color.Orange, 2);
+            drawSphere(0.111f / 3, 20, 20, 2);
             GL.PopMatrix();
             
             // Венера
@@ -666,7 +877,7 @@ namespace Lab_One_OpenGL
                 Math.Cos(rotateAngle / 18.46) * 0.733 * 3,
                 0);
             GL.Rotate(rotateAngle * 200 / 50, Vector3.UnitZ);
-            drawSphere(0.291f / 3, 20, 20, Color.LightBlue, 3);
+            drawSphere(0.291f / 3, 20, 20, 3);
             GL.PopMatrix();
 
             // Земля
@@ -676,7 +887,7 @@ namespace Lab_One_OpenGL
                 Math.Cos(rotateAngle / 30) * 3,
                 0);
             GL.Rotate(rotateAngle / 50, Vector3.UnitZ);
-            drawSphere(0.3f / 3, 20, 20, Color.DarkBlue, 4);
+            drawSphere(0.3f / 3, 20, 20, 4);
             GL.PopMatrix();
 
             //Луна
@@ -685,18 +896,26 @@ namespace Lab_One_OpenGL
                 Math.Sin(rotateAngle / 2.3) * 0.05 * 3 + Math.Sin(rotateAngle / 30) * 3,
                 Math.Cos(rotateAngle / 2.3) * 0.05 * 3 + Math.Cos(rotateAngle / 30) * 3,
                 0);
-            drawSphere(0.081f / 3, 20, 20, Color.Gray, 6);
+            drawSphere(0.081f / 3, 20, 20, 6);
             GL.PopMatrix();
 
             //Марс
-            GL.PushMatrix();
-            GL.Translate(
-                Math.Sin(rotateAngle / 56.46) * 1.52 * 3,
-                Math.Cos(rotateAngle / 56.46) * 1.52 * 3,
-                0);
-            GL.Rotate(rotateAngle * 1.025f / 50, Vector3.UnitZ);
-            drawSphere(0.456f / 3, 20, 20, Color.Red, 7);
-            GL.PopMatrix();
+            /*HitTheTarget((Math.Sin(rotateAngle / 56.46) * 1.52 * 3),
+                (Math.Cos(rotateAngle / 56.46) * 1.52 * 3),
+                0,
+                0.152, 0.152, 0.152, 2);
+
+            if ((ChekTarget[2] == 1) || (ChekTarget[2] == 2))
+            {*/
+                GL.PushMatrix();
+                GL.Translate(
+                    Math.Sin(rotateAngle / 56.46) * 1.52 * 3,
+                    Math.Cos(rotateAngle / 56.46) * 1.52 * 3,
+                    0);
+                GL.Rotate(rotateAngle * 1.025f / 50, Vector3.UnitZ);
+                drawSphere(0.456f / 3, 20, 20, 7);
+                GL.PopMatrix();
+            //}
 
             //Юпитер
             GL.PushMatrix();
@@ -705,7 +924,7 @@ namespace Lab_One_OpenGL
                 Math.Cos(rotateAngle / 355.8) * 5.19 * 3,
                 0);
             GL.Rotate(rotateAngle * 9.92f / 50, Vector3.UnitZ);
-            drawSphere(3.384f / 3, 20, 20, Color.Orange, 8);
+            drawSphere(3.384f / 3, 20, 20, 8);
             GL.PopMatrix();
 
             //Сатурн
@@ -715,7 +934,7 @@ namespace Lab_One_OpenGL
                 Math.Cos(rotateAngle / 883.81) * 9.53 * 3,
                 0);
             GL.Rotate(rotateAngle * 10.23f / 50, Vector3.UnitZ);
-            drawSphere(2.835f / 3, 20, 20, Color.Peru, 9); 
+            drawSphere(2.835f / 3, 20, 20, 9); 
 
             //Кольца Сатурна
             double i = 1.1;
@@ -757,265 +976,6 @@ namespace Lab_One_OpenGL
                 i += 0.01;
             }
             GL.End();
-        }
-
-        // Функция рисующая Треугольники в углах фоновой текстуры
-        private void DrawAlf(float Size, float SizeTr, int x, int y, int z)
-        {
-            // Size - размер фоновой текстуры
-            // SizeTr - размер угловых треугольников
-
-            GL.Enable(EnableCap.Texture2D);
-            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[7]);
-            GL.Begin(PrimitiveType.Triangles);
-            GL.TexCoord2(0.0, 0.0);
-            GL.Vertex3(x * SizeTr, y * Size, z * Size);
-            GL.TexCoord2(0.0, 1.0);
-            GL.Vertex3(x * Size, y * SizeTr, z * Size);
-            GL.TexCoord2(1.0, 1.0);
-            GL.Vertex3(x * Size, y * Size, z * SizeTr);
-            GL.TexCoord2(1.0, 0.0);
-            GL.End();
-            GL.Disable(EnableCap.Texture2D);
-        }
-
-        // Функция рисующая фоновую текстуру "КОСМОС"
-        private void DrawSqCube(int TextureNum)
-        {
-            float Size = 32.0f, SizeTr = 28.0f;
-            
-            // Первая Грань
-            GL.Enable(EnableCap.Texture2D);
-            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[TextureNum]);
-            GL.Begin(PrimitiveType.Quads);
-            GL.TexCoord2(0.0, 0.0);
-            GL.Vertex3(-Size, -Size, -Size);
-            GL.TexCoord2(0.0, 1.0);
-            GL.Vertex3(Size, -Size, -Size);
-            GL.TexCoord2(1.0, 1.0);
-            GL.Vertex3(Size, Size, -Size);
-            GL.TexCoord2(1.0, 0.0);
-            GL.Vertex3(-Size, Size, -Size);
-            GL.End();
-            GL.Disable(EnableCap.Texture2D);
-
-            // Вторая Грань
-            GL.Enable(EnableCap.Texture2D);
-            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[TextureNum]);
-            GL.Begin(PrimitiveType.Quads);
-            GL.TexCoord2(0.0, 0.0);
-            GL.Vertex3(-Size, -Size, -Size);
-            GL.TexCoord2(0.0, 1.0);
-            GL.Vertex3(-Size, Size, -Size);
-            GL.TexCoord2(1.0, 1.0);
-            GL.Vertex3(-Size, Size, Size);
-            GL.TexCoord2(1.0, 0.0);
-            GL.Vertex3(-Size, -Size, Size);
-            GL.End();
-            GL.Disable(EnableCap.Texture2D);
-
-            // Третья Грань
-            GL.Enable(EnableCap.Texture2D);
-            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[TextureNum]);
-            GL.Begin(PrimitiveType.Quads);
-            GL.TexCoord2(0.0, 0.0);
-            GL.Vertex3(-Size, -Size, -Size);
-            GL.TexCoord2(0.0, 1.0);
-            GL.Vertex3(Size, -Size, -Size);
-            GL.TexCoord2(1.0, 1.0);
-            GL.Vertex3(Size, -Size, Size);
-            GL.TexCoord2(1.0, 0.0);
-            GL.Vertex3(-Size, -Size, Size);
-            GL.End();
-            GL.Disable(EnableCap.Texture2D);
-
-            // Четвертая Грань
-            GL.Enable(EnableCap.Texture2D);
-            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[TextureNum]);
-            GL.Begin(PrimitiveType.Quads);
-            GL.TexCoord2(0.0, 0.0);
-            GL.Vertex3(Size, -Size, -Size);
-            GL.TexCoord2(0.0, 1.0);
-            GL.Vertex3(Size, Size, -Size);
-            GL.TexCoord2(1.0, 1.0);
-            GL.Vertex3(Size, Size, Size);
-            GL.TexCoord2(1.0, 0.0);
-            GL.Vertex3(Size, -Size, Size);
-            GL.End();
-            GL.Disable(EnableCap.Texture2D);
-
-            // Пятая Грань
-            GL.Enable(EnableCap.Texture2D);
-            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[TextureNum]);
-            GL.Begin(PrimitiveType.Quads);
-            GL.TexCoord2(0.0, 0.0);
-            GL.Vertex3(Size, Size, Size);
-            GL.TexCoord2(0.0, 1.0);
-            GL.Vertex3(Size, Size, -Size);
-            GL.TexCoord2(1.0, 1.0);
-            GL.Vertex3(-Size, Size, -Size);
-            GL.TexCoord2(1.0, 0.0);
-            GL.Vertex3(-Size, Size, Size);
-            GL.End();
-            GL.Disable(EnableCap.Texture2D);
-
-            // Шестая Грань
-            GL.Enable(EnableCap.Texture2D);
-            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[TextureNum]);
-            GL.Begin(PrimitiveType.Quads);
-            GL.TexCoord2(0.0, 0.0);
-            GL.Vertex3(-Size, -Size, Size);
-            GL.TexCoord2(0.0, 1.0);
-            GL.Vertex3(Size, -Size, Size);
-            GL.TexCoord2(1.0, 1.0);
-            GL.Vertex3(Size, Size, Size);
-            GL.TexCoord2(1.0, 0.0);
-            GL.Vertex3(-Size, Size, Size);
-            GL.End();
-            GL.Disable(EnableCap.Texture2D);
-
-            //Углы фоновой текстуры
-            DrawAlf(Size, SizeTr, 1, 1, 1);
-            DrawAlf(Size, SizeTr, 1, 1, -1);
-            DrawAlf(Size, SizeTr, 1, -1, 1);
-            DrawAlf(Size, SizeTr, 1, -1, -1);
-            DrawAlf(Size, SizeTr, -1, 1, 1);
-            DrawAlf(Size, SizeTr, -1, 1, -1);
-            DrawAlf(Size, SizeTr, -1, -1, 1);
-            DrawAlf(Size, SizeTr, -1, -1, -1);
-        }
-
-        // Функция рисующая маятник
-        private void DrawPendulum()
-        {
-            drawSphere(0.1, 10, 10, Color.Black, 1);
-            drawCircle(3, Color.Black, false);
-            // Диаметр круга
-            drawLine(0, 3, 0);
-            drawLine(0, -3, 0);
-            
-            // Условие для затухания
-            if ((Math.Cos(rotateAngle / 50) < (5 / Math.Sqrt(Math.Sqrt(rotateAngle)))) &&
-                (Math.Cos(rotateAngle / 50) > -(5 / Math.Sqrt(Math.Sqrt(rotateAngle)))))
-            {
-                GL.PushMatrix();
-                GL.Translate(
-                    Math.Abs(Math.Sin(rotateAngle / 50)) * 3,
-                    Math.Cos(rotateAngle / 50) * 3,
-                    0);
-                drawSphere(0.5, 10, 10, Color.Red, 1);
-                GL.PopMatrix();
-
-                GL.PushMatrix();
-                drawLine(
-                    Math.Abs(Math.Sin(rotateAngle / 50)) * 3,
-                    Math.Cos(rotateAngle / 50) * 3,
-                    0);
-                GL.PopMatrix();
-            }
-            else
-            {
-                // Перескок для затухания
-                rotateAngle += 180 * (float)(1 - 5 / Math.Sqrt(Math.Sqrt(rotateAngle)));
-            }
-
-            // Возможна реализация через остаток, для плавности переходов
-        }
-
-        // Функция рисующая комнату
-        private void DrawRoom()
-        {
-            float Size = 30.0f;
-
-            // Первая Грань
-            GL.Enable(EnableCap.Texture2D);
-            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[12]);
-            GL.Begin(PrimitiveType.Quads);
-            GL.TexCoord2(0.0, 0.0);
-            GL.Vertex3(-Size, -Size, -Size);
-            GL.TexCoord2(0.0, 1.0);
-            GL.Vertex3(Size, -Size, -Size);
-            GL.TexCoord2(1.0, 1.0);
-            GL.Vertex3(Size, Size, -Size);
-            GL.TexCoord2(1.0, 0.0);
-            GL.Vertex3(-Size, Size, -Size);
-            GL.End();
-            GL.Disable(EnableCap.Texture2D);
-
-            // Вторая Грань
-            GL.Enable(EnableCap.Texture2D);
-            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[10]);
-            GL.Begin(PrimitiveType.Quads);
-            GL.TexCoord2(0.0, 0.0);
-            GL.Vertex3(-Size, -Size, -Size);
-            GL.TexCoord2(0.0, 1.0);
-            GL.Vertex3(-Size, Size, -Size);
-            GL.TexCoord2(1.0, 1.0);
-            GL.Vertex3(-Size, Size, Size);
-            GL.TexCoord2(1.0, 0.0);
-            GL.Vertex3(-Size, -Size, Size);
-            GL.End();
-            GL.Disable(EnableCap.Texture2D);
-
-            // Третья Грань
-            GL.Enable(EnableCap.Texture2D);
-            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[10]);
-            GL.Begin(PrimitiveType.Quads);
-            GL.TexCoord2(0.0, 0.0);
-            GL.Vertex3(-Size, -Size, -Size);
-            GL.TexCoord2(0.0, 1.0);
-            GL.Vertex3(Size, -Size, -Size);
-            GL.TexCoord2(1.0, 1.0);
-            GL.Vertex3(Size, -Size, Size);
-            GL.TexCoord2(1.0, 0.0);
-            GL.Vertex3(-Size, -Size, Size);
-            GL.End();
-            GL.Disable(EnableCap.Texture2D);
-
-            // Четвертая Грань
-            GL.Enable(EnableCap.Texture2D);
-            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[10]);
-            GL.Begin(PrimitiveType.Quads);
-            GL.TexCoord2(0.0, 0.0);
-            GL.Vertex3(Size, -Size, -Size);
-            GL.TexCoord2(0.0, 1.0);
-            GL.Vertex3(Size, Size, -Size);
-            GL.TexCoord2(1.0, 1.0);
-            GL.Vertex3(Size, Size, Size);
-            GL.TexCoord2(1.0, 0.0);
-            GL.Vertex3(Size, -Size, Size);
-            GL.End();
-            GL.Disable(EnableCap.Texture2D);
-
-            // Пятая Грань
-            GL.Enable(EnableCap.Texture2D);
-            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[11]);
-            GL.Begin(PrimitiveType.Quads);
-            GL.TexCoord2(0.0, 0.0);
-            GL.Vertex3(Size, Size, Size);
-            GL.TexCoord2(0.0, 1.0);
-            GL.Vertex3(Size, Size, -Size);
-            GL.TexCoord2(1.0, 1.0);
-            GL.Vertex3(-Size, Size, -Size);
-            GL.TexCoord2(1.0, 0.0);
-            GL.Vertex3(-Size, Size, Size);
-            GL.End();
-            GL.Disable(EnableCap.Texture2D);
-
-            // Шестая Грань
-            GL.Enable(EnableCap.Texture2D);
-            GL.BindTexture(TextureTarget.Texture2D, texturesIDs[9]);
-            GL.Begin(PrimitiveType.Quads);
-            GL.TexCoord2(0.0, 0.0);
-            GL.Vertex3(-Size, -Size, Size);
-            GL.TexCoord2(0.0, 1.0);
-            GL.Vertex3(Size, -Size, Size);
-            GL.TexCoord2(1.0, 1.0);
-            GL.Vertex3(Size, Size, Size);
-            GL.TexCoord2(1.0, 0.0);
-            GL.Vertex3(-Size, Size, Size);
-            GL.End();
-            GL.Disable(EnableCap.Texture2D);
         }
     }
 }
