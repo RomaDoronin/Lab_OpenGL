@@ -35,7 +35,13 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.Description_for_player = new System.Windows.Forms.Label();
+            this.Sound_button = new System.Windows.Forms.Button();
+            this.label6 = new System.Windows.Forms.Label();
+            this.soundBar = new System.Windows.Forms.TrackBar();
+            this.ProsentOfSound = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.soundBar)).BeginInit();
             this.SuspendLayout();
             // 
             // glControl1
@@ -113,24 +119,83 @@
             this.label5.Size = new System.Drawing.Size(0, 39);
             this.label5.TabIndex = 7;
             // 
-            // textBox1
+            // Description_for_player
             // 
-            this.textBox1.BackColor = System.Drawing.SystemColors.Control;
-            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox1.Cursor = System.Windows.Forms.Cursors.Help;
-            this.textBox1.Location = new System.Drawing.Point(32, 13);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(272, 20);
-            this.textBox1.TabIndex = 8;
-            this.textBox1.Text = "Control of the ship: W - Forward | S - Back | LMB - Shoot";
-            this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Description_for_player.AutoSize = true;
+            this.Description_for_player.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Description_for_player.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F);
+            this.Description_for_player.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.Description_for_player.Location = new System.Drawing.Point(32, 9);
+            this.Description_for_player.Name = "Description_for_player";
+            this.Description_for_player.Size = new System.Drawing.Size(333, 18);
+            this.Description_for_player.TabIndex = 9;
+            this.Description_for_player.Text = "Control of the ship: W - Forward | S - Back | LMB - Shoot";
+            // 
+            // Sound_button
+            // 
+            this.Sound_button.BackColor = System.Drawing.SystemColors.Control;
+            this.Sound_button.BackgroundImage = global::Lab_One_OpenGL.Properties.Resources.Sound_on_25x25;
+            this.Sound_button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.Sound_button.Location = new System.Drawing.Point(701, 5);
+            this.Sound_button.Name = "Sound_button";
+            this.Sound_button.Size = new System.Drawing.Size(25, 25);
+            this.Sound_button.TabIndex = 10;
+            this.Sound_button.UseVisualStyleBackColor = false;
+            this.Sound_button.Click += new System.EventHandler(this.Sound_button_Click);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F);
+            this.label6.Location = new System.Drawing.Point(469, 9);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(214, 16);
+            this.label6.TabIndex = 11;
+            this.label6.Text = "Press \'J\' to change sound ON/OFF";
+            // 
+            // soundBar
+            // 
+            this.soundBar.LargeChange = 1;
+            this.soundBar.Location = new System.Drawing.Point(701, 39);
+            this.soundBar.Name = "soundBar";
+            this.soundBar.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.soundBar.Size = new System.Drawing.Size(45, 104);
+            this.soundBar.TabIndex = 12;
+            this.soundBar.Value = 10;
+            this.soundBar.Scroll += new System.EventHandler(this.soundBar_Scroll);
+            // 
+            // ProsentOfSound
+            // 
+            this.ProsentOfSound.AutoSize = true;
+            this.ProsentOfSound.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F);
+            this.ProsentOfSound.Location = new System.Drawing.Point(701, 150);
+            this.ProsentOfSound.Name = "ProsentOfSound";
+            this.ProsentOfSound.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.ProsentOfSound.Size = new System.Drawing.Size(41, 16);
+            this.ProsentOfSound.TabIndex = 13;
+            this.ProsentOfSound.Text = "100%";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(704, 189);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(13, 13);
+            this.label7.TabIndex = 14;
+            this.label7.Text = "0";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(704, 566);
-            this.Controls.Add(this.textBox1);
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.ClientSize = new System.Drawing.Size(758, 566);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.ProsentOfSound);
+            this.Controls.Add(this.soundBar);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.Sound_button);
+            this.Controls.Add(this.Description_for_player);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
@@ -141,6 +206,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "StarWars - Game";
+            ((System.ComponentModel.ISupportInitialize)(this.soundBar)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -154,7 +220,12 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label Description_for_player;
+        private System.Windows.Forms.Button Sound_button;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TrackBar soundBar;
+        private System.Windows.Forms.Label ProsentOfSound;
+        private System.Windows.Forms.Label label7;
     }
 }
 

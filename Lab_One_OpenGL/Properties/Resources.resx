@@ -118,7 +118,25 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Sound_on_50x50" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\bin\Debug\Icons\Sound_on_50x50.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Sound_off_50x50" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\bin\Debug\Icons\Sound_off_50x50.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Sound_on" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\bin\Debug\Icons\Sound_on.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Sound_off" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\bin\Debug\Icons\Sound_off.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Прицел" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Прицел.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Sound_off_25x25" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\bin\Debug\Icons\Sound_off_25x25.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Sound_on_25x25" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\bin\Debug\Icons\Sound_on_25x25.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

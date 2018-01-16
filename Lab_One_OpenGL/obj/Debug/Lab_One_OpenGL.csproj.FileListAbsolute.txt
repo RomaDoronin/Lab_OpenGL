@@ -95,3 +95,16 @@ C:\Users\Doronin Roman\Documents\Visual Studio 2013\Projects\StarWarGame-master\
 C:\Users\Doronin Roman\Documents\Visual Studio 2013\Projects\StarWarGame-master\Lab_One_OpenGL\obj\Debug\Lab_One_OpenGL.Form1.resources
 C:\Users\Doronin Roman\Documents\Visual Studio 2013\Projects\StarWarGame-master\Lab_One_OpenGL\obj\Debug\Lab_One_OpenGL.Properties.Resources.resources
 C:\Users\Doronin Roman\Documents\Visual Studio 2013\Projects\StarWarGame-master\Lab_One_OpenGL\obj\Debug\Lab_One_OpenGL.csproj.GenerateResource.Cache
+D:\Data_from_Git\Lab_OpenGL\Lab_One_OpenGL\bin\Debug\Lab_One_OpenGL.exe.config
+D:\Data_from_Git\Lab_OpenGL\Lab_One_OpenGL\bin\Debug\Lab_One_OpenGL.exe
+D:\Data_from_Git\Lab_OpenGL\Lab_One_OpenGL\bin\Debug\Lab_One_OpenGL.pdb
+D:\Data_from_Git\Lab_OpenGL\Lab_One_OpenGL\bin\Debug\OpenTK.dll
+D:\Data_from_Git\Lab_OpenGL\Lab_One_OpenGL\bin\Debug\OpenTK.GLControl.dll
+D:\Data_from_Git\Lab_OpenGL\Lab_One_OpenGL\bin\Debug\OpenTK.pdb
+D:\Data_from_Git\Lab_OpenGL\Lab_One_OpenGL\bin\Debug\OpenTK.xml
+D:\Data_from_Git\Lab_OpenGL\Lab_One_OpenGL\bin\Debug\OpenTK.GLControl.xml
+D:\Data_from_Git\Lab_OpenGL\Lab_One_OpenGL\obj\Debug\Lab_One_OpenGL.Form1.resources
+D:\Data_from_Git\Lab_OpenGL\Lab_One_OpenGL\obj\Debug\Lab_One_OpenGL.Properties.Resources.resources
+D:\Data_from_Git\Lab_OpenGL\Lab_One_OpenGL\obj\Debug\Lab_One_OpenGL.csproj.GenerateResource.Cache
+D:\Data_from_Git\Lab_OpenGL\Lab_One_OpenGL\obj\Debug\Lab_One_OpenGL.exe
+D:\Data_from_Git\Lab_OpenGL\Lab_One_OpenGL\obj\Debug\Lab_One_OpenGL.pdb

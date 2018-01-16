@@ -7,7 +7,93 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Media; // Для музыки
+using System.Threading;
+
+// Для музыки
+using System.Media;
+using Microsoft.DirectX.AudioVideoPlayback;
+
+// Класс список специально для "Музыки"
+public class TList<T>
+{
+    private T[] mas;
+    private int LastIndex;
+    private int MaxSize;
+
+    public TList(int _MaxSize)
+    {
+        MaxSize = _MaxSize;
+        mas = new T[MaxSize];
+        LastIndex = -1;
+    }
+
+    public bool IsEmpty()
+    {
+        return (LastIndex == -1);
+    }
+
+    public void AddLast(T val)
+    {
+        LastIndex++;
+        mas[LastIndex % MaxSize] = val;
+    }
+
+    //public void DelFirst()
+    //{
+    //    if (!IsEmpty())
+    //    {
+    //        for (int i = 0; i < LastIndex; i++)
+    //        {
+    //            mas[i] = mas[i+1];
+    //        }
+
+    //        LastIndex--;
+    //    }
+    //}
+
+    //public void DelLast()
+    //{
+    //    LastIndex--;
+    //}
+
+    //public void DelForIndex(int index)
+    //{
+    //    if (!IsEmpty() && (index <= LastIndex))
+    //    {
+    //        for (int i = index; i < LastIndex; i++)
+    //        {
+    //            mas[i] = mas[i+1];
+    //        }
+
+    //        LastIndex--;
+    //    }
+    //}
+
+    //public T GetFirst()
+    //{
+    //    return mas[0];
+    //}
+
+    public T GetLast()
+    {
+        return mas[LastIndex % MaxSize];
+    }
+
+    public T GetForIndex(int index)
+    {
+        return mas[index];
+    }
+
+    public int GetLastIndex()
+    {
+        return LastIndex % MaxSize;
+    }
+
+    public int GetMaxSize()
+    {
+        return MaxSize;
+    }
+}
 
 namespace Lab_One_OpenGL
 {
@@ -21,6 +107,10 @@ namespace Lab_One_OpenGL
         public double[] rotateD = new double[25]/* = 0.03*/; // Счетчик для взрыва
         public List<int> texturesIDs = new List<int>(); // Список текстур
         public int sum = 1;
+        public bool soundStatus = true; // Включена музыка или нет
+
+        public const int SizeCerList = 15;
+        public TList<Audio> music = new TList<Audio>(SizeCerList); // Кольцевой список играющей музыки/звуков
 
         public int[] Game = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
@@ -109,29 +199,29 @@ namespace Lab_One_OpenGL
 
         public void Render()
         {
-                // Солнечная система
-                DrawSolSystem();
-                // Фон для SolSystem
-                drawSphere(40, 20, 20, 10);
-                CallSpaceShip();
-                DrawSight();
+            // Солнечная система
+            DrawSolSystem();
+            // Фон для SolSystem
+            drawSphere(40, 20, 20, 10);
+            CallSpaceShip();
+            DrawSight();
 
-                // Рисование Космических корабля!
-                if ((DistanceCentrel > -1) && (DistanceCentrel < 45) /*|| (DistanceCentrel > 50)*/)
-                {
-                    AddShip(4.3f + 35, 4.6f, 7.1f, 0, DistanceCentrel);
-                    AddShip(9.9f + 42, -7.3f, 2.1f, 1, DistanceCentrel); //AddShip(9 + xe, 5.6f + ye, 4.9f + ze, 10, DistanceCentrel);
-                    AddShip(1 - 47, 4.9f, 7.5f, 2, DistanceCentrel); //AddShip(5 + xe, 1.4f + ye, 1.8f + ze, 11, DistanceCentrel);
-                    AddShip(6.9f - 37, -3.9f, 6.5f, 3, DistanceCentrel); //AddShip(4.6f + xe, 4.2f + ye, 1 + ze, 12, DistanceCentrel);
-                    AddShip(5, 9.3f + 54, 7.8f, 4, DistanceCentrel); //AddShip(2.8f + xe, 6.2f + ye, 3.9f + ze, 13, DistanceCentrel);
-                    AddShip(-5.6f, 9.7f + 36, 1.5f, 5, DistanceCentrel); //AddShip(9.9f + xe, 8.5f + ye, 1.7f + ze, 14, DistanceCentrel);
-                    AddShip(-1.6f, 8.9f - 66, 1.6f, 6, DistanceCentrel); //AddShip(6.8f + xe, 2.6f + ye, 9.6f + ze, 15, DistanceCentrel);
-                    AddShip(9.8f, 7.2f - 49, 2.4f, 7, DistanceCentrel); //AddShip(2.3f + xe, 6.9f + ye, 2.4f + ze, 16, DistanceCentrel);
-                    //AddShip(4.7f + xe, (-1) * (10 + ye), 2.7f + ze, 8, DistanceCentrel); //AddShip(2.5f + xe, 2.9f + ye, 5.1f + ze, 17, DistanceCentrel);
-                    //AddShip(9.1f + xe, (-1) * (5.3f + ye), 1.1f + ze, 9, DistanceCentrel); //AddShip(5.4f + xe, 4.7f + ye, 5.2f + ze, 18, DistanceCentrel);
-                    DistanceCentrel += 0.02f;
-                }
-                else if (sum != 1) Game[8] += 10;
+            // Рисование Космических корабля!
+            if ((DistanceCentrel > -1) && (DistanceCentrel < 45) /*|| (DistanceCentrel > 50)*/)
+            {
+                AddShip(4.3f + 35, 4.6f, 7.1f, 0, DistanceCentrel);
+                AddShip(9.9f + 42, -7.3f, 2.1f, 1, DistanceCentrel); //AddShip(9 + xe, 5.6f + ye, 4.9f + ze, 10, DistanceCentrel);
+                AddShip(1 - 47, 4.9f, 7.5f, 2, DistanceCentrel); //AddShip(5 + xe, 1.4f + ye, 1.8f + ze, 11, DistanceCentrel);
+                AddShip(6.9f - 37, -3.9f, 6.5f, 3, DistanceCentrel); //AddShip(4.6f + xe, 4.2f + ye, 1 + ze, 12, DistanceCentrel);
+                AddShip(5, 9.3f + 54, 7.8f, 4, DistanceCentrel); //AddShip(2.8f + xe, 6.2f + ye, 3.9f + ze, 13, DistanceCentrel);
+                AddShip(-5.6f, 9.7f + 36, 1.5f, 5, DistanceCentrel); //AddShip(9.9f + xe, 8.5f + ye, 1.7f + ze, 14, DistanceCentrel);
+                AddShip(-1.6f, 8.9f - 66, 1.6f, 6, DistanceCentrel); //AddShip(6.8f + xe, 2.6f + ye, 9.6f + ze, 15, DistanceCentrel);
+                AddShip(9.8f, 7.2f - 49, 2.4f, 7, DistanceCentrel); //AddShip(2.3f + xe, 6.9f + ye, 2.4f + ze, 16, DistanceCentrel);
+                //AddShip(4.7f + xe, (-1) * (10 + ye), 2.7f + ze, 8, DistanceCentrel); //AddShip(2.5f + xe, 2.9f + ye, 5.1f + ze, 17, DistanceCentrel);
+                //AddShip(9.1f + xe, (-1) * (5.3f + ye), 1.1f + ze, 9, DistanceCentrel); //AddShip(5.4f + xe, 4.7f + ye, 5.2f + ze, 18, DistanceCentrel);
+                DistanceCentrel += 0.02f;
+            }
+            else if (sum != 1) Game[8] += 10;
         }
 
         // Функция добавляющая корабль
@@ -168,8 +258,6 @@ namespace Lab_One_OpenGL
                     DrawSpaceShip();
                     GL.PopMatrix();
             }
-
-
         }
 
         // Функция отслеживающая попадания снарядов
@@ -301,6 +389,20 @@ namespace Lab_One_OpenGL
             GL.Material(MaterialFace.Front, MaterialParameter.Specular, materialSpecular);
             float materialShininess = 100;
             GL.Material(MaterialFace.Front, MaterialParameter.Shininess, materialShininess);
+        }
+
+        // Функция воспроизведения музыки
+        public void PlayMusic(string fileName)
+        {
+            Audio mus = new Audio(fileName);
+
+            if (!music.IsEmpty())
+                mus.Volume = music.GetLast().Volume;
+
+            music.AddLast(mus);
+
+            if (soundStatus)
+                music.GetLast().Play();
         }
 
         // Функция рисующая Сферу
@@ -643,11 +745,10 @@ namespace Lab_One_OpenGL
         // Функция рисующая Взрыв
         private void Boom(double RadiusBoom, int iTarget)
         {
-            if (rotateD[iTarget] == 0)
+            if ((rotateD[iTarget] == 0))
             {
                 // Звук взрыва
-                SoundPlayer sp = new SoundPlayer("Sound/Boom_02.wav");
-                sp.Play();
+                PlayMusic("Sound/Boom_02.wav");
             }
             if (rotateD[iTarget] <= RadiusBoom)
             {
